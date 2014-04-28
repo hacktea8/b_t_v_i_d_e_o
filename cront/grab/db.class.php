@@ -10,7 +10,7 @@ class DB_MYSQL{
   var $user     = "";
   var $password = "";
 
-  var $db_pre   = "";
+  var $db_pre   = "pw_";
   var $link_id  = 0;
   var $query_id = 0;
   var $record   = array();
@@ -22,7 +22,7 @@ class DB_MYSQL{
   var $usepconnect = 1;  //使用 pconnect
   var $num_rows = 0;
 
-  public function  __construct($server = "localhost",$user = "videoweb",$password = "ilovehk8",$database = "videoweb"){
+  public function  __construct($server = "localhost",$user = "btvideoweb",$password = "ilovehk8",$database = "btvideoweb"){
     $this->connect($server,$user,$password,$database);
     mysql_query("set names utf8");
   }
@@ -210,9 +210,6 @@ function query($query_string, $type= '') {
   }
 
   function escape($string){
-    if(!is_string($string)){
-       return $string;
-    }
     return mysql_real_escape_string($string);
   }
 
@@ -248,31 +245,7 @@ function query($query_string, $type= '') {
 
   }
 
-  function select_string($table=null,$fields=null,$where=array(),$order='',$limit=''){
-    if(!$table){
-     return false;
-    }
-    $whereStr = $orderStr = $limitStr = '';
-    if(!empty($where)){
-      $tmp = array();
-      foreach($where as $k => $v){
-       $v = $this->escape($v);
-       $tmp[] = "$k'$v'";
-      }
-      $where = implode(' AND ',$tmp);
-      if($where){
-        $whereStr = ' WHERE '.$where;
-      }
-    }
-    if($order){
-      $orderStr = sprintf(' ORDER BY %s',$order);
-    }
-    if($limit){
-      $limitStr = sprintf(' LIMIT %s',$limit);
-    }
-    $sql = sprintf('SELECT %s FROM %s %s %s %s',$fields,$table,$whereStr,$orderStr, $limitStr);
-    return trim($sql);
-  }
+
   function insert_string($table = null,$fields = null){
     if(!$table || !$fields)
         return false;

@@ -13,27 +13,76 @@ class Index extends Usrbase {
   }
   public function index()
   {
+    $c = $this->input->get('c');
+    if('topic' == $c){
+      $aid = $this->input->get('aid');
+      $this->topic($aid);return true;
+    }
+    if('list' == $c){
+      $cid = $this->input->get('cid');
+      $this->lists($cid);return true;
+    }
     $view = BASEPATH.'../';
     if(!is_writeable($view)){
        die($view.' is not write!');
     }
     $view .= 'index.html';
     $lock = $view . '.lock';
-    if( !file_exists($view) || (time() - filemtime($view)) > 24*3600 ){
+    if( !file_exists($view) || (time() - filemtime($view)) > 3*3600 ){
       if(!file_exists($lock)){
         
         $this->assign(array('_a'=>'index','emuleIndex'=>$this->mem->get('emutest-emuleIndexinfo')));
         $this->view('index_index');
         $output = $this->output->get_output();
         file_put_contents($lock, '');
-//        file_put_contents($view, $output);
+        file_put_contents($view, $output);
         @unlink($lock);
-//        @chmod($view, 0777);
-//        echo $output;
+        @chmod($view, 0777);
+        echo $output;
         return true;
       }
     }
     exit();
+  }
+  public function fav($page = 1){
+    if( !isset($this->userInfo['uid']) || !$this->userInfo['uid']){
+      redirect('/');
+    }
+    $page = intval($page);
+    $limit = 30;
+    $total = $this->emulemodel->getUserCollectTotal($this->userInfo['uid']);
+    $endP = ceil($total/$limit);
+    if($total && $endP >= $page){
+      $lists = $this->emulemodel->getUserCollectList($this->userInfo['uid'],$order = 'new',$page,$limit);
+    }
+    $this->load->library('pagination');
+    $config['base_url'] = sprintf('/index/collect/');
+    $config['total_rows'] = $total;
+    $config['per_page'] = 25;
+    $config['first_link'] = '第一页';
+    $config['next_link'] = '下一页';
+    $config['prev_link'] = '上一页';
+    $config['last_link'] = '最后一页';
+    $config['cur_tag_open'] = '<span class="current">';
+    $config['cur_tag_close'] = '</span>';
+    $config['suffix'] = '.html';
+    $config['use_page_numbers'] = TRUE;
+    $config['num_links'] = 5;
+    $config['cur_page'] = $page;
+
+    $this->pagination->initialize($config);
+    $page_string = $this->pagination->create_links();
+    $this->assign(array(
+    'page_string'=>$page_string,'infolist'=>$lists));
+    $this->view('index_collect');
+  }
+  public function addCollect($aid){
+    $data = array('status'=>0);
+    if($this->userInfo['uid']){
+      $f = $this->emulemodel->addUserCollect($this->userInfo['uid'],$aid);
+      $data['status'] = $f;
+    }
+    die(json_encode($data));
   }
   public function lists($cid,$order = 0,$page = 1){
     $page = intval($page);
@@ -93,52 +142,49 @@ class Index extends Usrbase {
     ,'page_string'=>$page_string,'subcatelist'=>$data['subcatelist'],'cid'=>$cid));
     $this->view('index_lists');
   }
-  public function content($vid){
-    $vid = intval($vid);
-    $info = $this->tvmodel->getVideoInfoByVid($vid,$mod = 'content');
-    $this->assign(array('info'=>$info
-    ,'hotlist'=>$hot_rank
-    ));
+  public function topic($aid){
+    $aid = intval($aid);
+    $data = $this->emulemodel->getEmuleTopicByAid($aid,$this->userInfo['uid'], $this->userInfo['isadmin']);
+    $data['info']['ptime']=date('Y:m:d', $data['info']['ptime']);
+    $data['info']['utime'] = date('Y/m/d', $data['info']['utime']);
+    $this->_rewrite_list_url($data['postion']);
+    $this->_rewrite_article_url($data['info']);
+    $data['info'] = $data['info'][0];
+    $data['info']['relatdata'] = is_array($data['info']['relatdata']) ? $data['info']['relatdata'] : array();
+    $data['info']['fav'] = 0;
+    $cid = $data['info']['cid'] ? $data['info']['cid'] : 0;
+    $cpid = isset($data['postion'][0]['id'])?$data['postion'][0]['id']:0;
+// seo setting
+    $kw = '';
+    foreach($data['postion'] as $row){
+       $kw .= $row['name'].',';
+    }
+    $keywords = $data['info']['name'].','.$kw.$this->seo_keywords;
+    $title = $data['info']['name'];
+    $data['info']['intro'] = str_replace('www.ed2kers.com',$this->viewData['domain'],$data['info']['intro']);
+    // not VIP Admin check verify
+    $emu_aid = isset($_COOKIE['hk8_verify_topic_dw'])?strcode($_COOKIE['hk8_verify_topic_dw'],false):'';
+    $emu_aid = explode("\t",$emu_aid);
+    $emu_aid = $emu_aid[0];
+    $verifycode = '';
+    if( !($emu_aid == $data['info']['id'] || $this->userInfo['isvip'] || $this->userInfo['isadmin'])){
+       $data['info']['downurl'] = '';
+       $data['info']['vipdwurl'] = '';
+       $this->load->library('verify');
+       $verifycode = $this->verify->show();
+    }
+    $isCollect = $this->emulemodel->getUserIscollect($this->userInfo['uid'],$data['info']['id']);
+    $this->assign(array('isCollect'=>$isCollect,'verifycode'=>$verifycode,'seo_title'=>$title,'seo_keywords'=>$keywords,'cid'=>$cid,'cpid'=>$cpid,'info'=>$data['info'],'postion'=>$data['postion'],'aid'=>$aid)); 
     $ip = $this->input->ip_address();
-    $key = sprintf('videohitslog:%s:%d',$ip,$vid);
+    $key = sprintf('emuhitslog:%s:%d',$ip,$aid);
 //var_dump($this->redis->exists($key));exit;
     if(!$this->redis->exists($key)){
        $this->redis->set($key, 1, $this->expirettl['6h']);
     }
-    $this->view('index_content');
+    $this->view('index_topic');
   }
-  public function channel($cid,$order=0,$page=1, $type = ''){
-    $cid = intval($cid);
-    $order = intval($order);
-    $page = intval($page);
-    $type = in_array($type, array('','_tv','_movie')) ? $type : '';
-    $key = 'month_rank'.$cid;
-    $month_rank = $this->mem->get($key);
-    if( !$month_rank){
-      $month_rank = $this->tvmodel->getVideoListByCid($cid,$order,1,15);
-      $this->mem->set($key,$month_rank,$this->expirettl['1d']);
-    }
-    $key = 'recommend_cid'.$cid;
-    $recommend_rank = $this->mem->get($key);
-    if( !$recommend_rank){
-      $recommend_rank = $this->tvmodel->getVideoListByCid($cid,$order,1,15);
-      $this->mem->set($key,$recommend_rank,$this->expirettl['1d']);
-    }
-    $arealist = $this->tvmodel->getVideoAreaList();
-    $channelList = $this->tvmodel->getVideoListByCid($cid,$order,$page,15);
-    $this->assign(array('_a'=>'channel'.$type,'arealist'=>$arealist,'channelList'=>$channelList
-    ,'month_rank'=>$month_rank,'recommend_rank'=>$recommend_rank
-    ));
-    $this->view('index_channel'.$type);
-  }
-  public function detail($vid,$sid){
-    $vid = intval($vid);
-    $sid = intval($sid);
-    $info = $this->tvmodel->getVideoInfoByVid($vid,$sid);
-    $this->assign(array('info'=>$info
-    ,'hotlist'=>$hot_rank,'_a'=>'content'
-    ));
-    $this->view('index_detail');
+  public function tpl(){
+    $this->load->view('index_tpl',$this->viewData);
   }
   public function search($q='',$type = 0,$order = 0,$page = 1){
     $q = $q ? $q:$this->input->get('q');
@@ -199,9 +245,17 @@ class Index extends Usrbase {
     redirect($url);
   }
   public function loginout(){
-    $this->logout();
+    $this->session->unset_userdata('user_logindata');
+    setcookie('hk8_auth','',time()-3600,'/');
+    $url = $_SERVER['HTTP_REFERER'];
+//echo $url;exit;
+    redirect($url);
+  }
+  public function isUserInfo(){
+    $data = array('status'=>0);
+    if( isset($this->userInfo['uid']) && $this->userInfo['uid']){
+       $data['status'] = 1;
+    }
+    die(json_encode($data));
   }
 }
-
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */

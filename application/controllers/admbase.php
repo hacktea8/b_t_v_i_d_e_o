@@ -4,9 +4,7 @@ class Admbase extends Webbase {
    
   public function __construct(){
     parent::__construct();
-    if(!$this->userInfo['isadmin']){
-      header("Location: /");
-    }    
+    
     $this->assign(array(
                 'css_url'=>$this->config->item('adm_css_url'),
                 'css_url'=>$this->config->item('adm_css_url'),

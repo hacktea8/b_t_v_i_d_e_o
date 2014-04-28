@@ -75,7 +75,7 @@
         <div class="block2" style="float:left;">
             <div style="float:left;">
                                 <div id="addFavModule" style="float:left;position:relative;width:125px;margin-left:5px">
-                    <a class="addFav addFavModule_a" title="收藏该资源" id="addFav"></a>
+                    <a class="addFav" alt="收藏该资源" id="addFav"><img src="<?php echo $img_url,$isCollect?'del':'','favorite.gif';?>" id="addFavBtn" alt="收藏该资源" /></a>
                     <div style="position: absolute; left: 133px; top: -17px; margin: 0px; border: 1px solid rgb(205, 180, 126); width: 310px; background: none repeat scroll 0% 0% rgb(255, 255, 205); height: 55px;z-index:3;" id="folderfavoritatips">
                         <div style="position: absolute; height: 30px; width: 12px; top: 18px;left:-12px; background: url(<?php echo $img_url;?>tipsleft.gif) no-repeat scroll 0% 0% transparent;">
                         </div>
@@ -143,7 +143,7 @@
 <?php
 echo $info['downurl'];
 if($verifycode){
-  echo '<form id="verify_form">',$verifycode,'</form>';
+  echo '<h1 style="color:red;text-align:center;">温馨提示:输入验证码即可显示下载地址!</h1><form id="verify_form">',$verifycode,'</form>';
 ?>
 <button id="startcheck" title="输入验证码，展示下载地址!" style="width: 80px;height: 30px;background-color: green;cursor: pointer;margin-left: 100px;">开始校验</button>
 <script type="text/javascript">
@@ -196,6 +196,12 @@ VIP通道:<?php echo $info['vipdwurl'];?>
  </ul>
    </div>
         <div id="con_theRel" class="tab_con_tab">
+<!-- UJian Button BEGIN -->
+<div id="ujian-hook" class="ujian-hook"></div>
+<script type="text/javascript">var ujian_config = {num:14,itemTitle:'猜你喜欢:',picSize:84,textHeight:45};</script>
+<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1762590"></script>
+<a href="" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
+<!-- UJian Button END -->
     	<table class="restable topic_class_restable">
 	<tbody>
 <?php foreach($info['relatdata'] as $key=>$row){
@@ -224,7 +230,9 @@ if($key%5==0){
 </div>									
 <div id="con_theCom" class="tab_con_tab">
 <!-- Comment BEGIN -->	
-<div class="ds-thread topic_admin_class_edit"></div>
+<div id="emu_comment">
+ <div class="ds-thread topic_admin_class_edit"></div>
+</div>
 <script type="text/javascript">var duoshuoQuery = {short_name:"emu"};	(function() {		var ds = document.createElement('script');		ds.type = 'text/javascript';ds.async = true;		ds.src = 'http://static.duoshuo.com/embed.js';		ds.charset = 'UTF-8';		(document.getElementsByTagName('head')[0] 		|| document.getElementsByTagName('body')[0]).appendChild(ds);	})();	
 </script><!-- Comment END -->
 </div>
@@ -294,17 +302,43 @@ foreach($hotTopic as $row){
 <a title="<?php echo $row['name'];?>" href="<?php echo $row['url'];?>" onClick="" target="_blank"><?php echo $row['name'];?></a>
 </dd>
 <?php
-} ?>	        
-   </dl>  <!-- end of hotres -->
+} ?>
+</dl>  <!-- end of hotres -->
 </div>
 </div> 
   </div><!-- end of navside -->
 </div><!-- end of page wrap-->
 <script type="text/javascript">
+var href = '';
+$(document).ready(function(){
+$("#emu_comment p a").bind('mouseover',function(){
+href = $(this).attr('href');
+if(href.indexOf('duoshuo.com')){
+$(this).attr('href','');
+}
+});
+$("#ujian-hook a").mouseover(function(){
+href = $(this).attr('href');
+if(href.indexOf('ujian.cc')){
+$(this).attr('href','');
+}
+});
+});
 function show_hide_tab(show,hide){
   $('.'+hide).hide();
   $('.group-mods ul li').removeClass('current');
   $('#'+show).parent().addClass('current');
   $('#con_'+show).show();
 }
+$('#addFav').click(function(){
+var uid = <?php echo $uinfo['uid']?0:1;?>;
+if(uid){return false;}
+$.get("/index/addCollect/<?php echo $info['id'];?>", function(result){
+  if(result.status==1){
+    $('#addFavBtn').attr("src","<?php echo $img_url;?>delfavorite.gif");
+  }else{
+    $('#addFavBtn').attr("src","<?php echo $img_url;?>favorite.gif");
+  }
+},'json');
+});
 </script>

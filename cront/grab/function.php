@@ -1,17 +1,9 @@
 <?php
 
-function write_log($html){
- $log = ROOTPATH.'cache/not_match_url.txt';
- if(file_exists($log)){
-  file_put_contents($log,"$html\r\n",FILE_APPEND);
-  return true;
- }
- file_put_contents($log,"$html\r\n");
- return true;
-}
-function debug($var){
-var_dump($var);exit;
-}
+include_once($APPPATH.'../db.class.php');
+include_once($APPPATH.'../model.php');
+
+$model=new Model();
 
 /*
 获取配对的标签的内容
@@ -45,7 +37,35 @@ function getTagpair(&$str,&$string,$head,$end,$same){
     $count_tail=substr_count($str, $end);	
   }
 }
+/*
+function getTagpair(&$str,&$string,$head,$end,$same){
+  $str='';	
+  $start=stripos($string, $same);
+  $length=stripos($string, $end)+strlen($end)-$start;
+  $str=substr($string, $start,$length);
+  $others=substr($string, $length+$start);
+  $count_head=substr_count($str,$same);
+  $count_tail=substr_count($str, $end);
+  while($count_head!=$count_tail){
+    //$start=stripos($others, $same);
+    $length=stripos($others, $end)+strlen($end);
+    $str.=substr($others, 0,$length);
+    $others=substr($others, $length);
+    $count_head=substr_count($str,$same);
+    $count_tail=substr_count($str, $end);	
+  }
+		
+}
+*/
+function updateCateatotal(){
+ global $model;
+  return $model->updateCateatotal();
+}
 
+function getsubcatelist(&$subcate){
+  global $model;
+  $subcate=$model->getsubcatelist();
+}
 
 function getlastgrabinfo($mode=1,$config=array()){
   global $lastgrab,$cateid,$pageno;
@@ -64,205 +84,145 @@ function getlastgrabinfo($mode=1,$config=array()){
   return true;
 }
 
-function loginSecBbs(){
-   global $dzcurl,$dzdomain,$read_user;
-   $uinfo = $read_user;
-   $dzcurl->config['cookie'] = 'discuz'.$uinfo['uid'];
-   $dzcurl->config['userAgent'] = $uinfo['userAgent'];
-
-   $dzcurl->config['url'] = $dzdomain.'/member.php?mod=register';
-   $html = $dzcurl->getHtml();
-   if(false !== stripos($html,"<p>歡迎您回來，")){
-     preg_match_all('#src="([^"]+)" reload="1"#Uis', $html, $match);
-//var_dump($match);exit;
-     foreach($match[1] as $url){
-       $dzcurl->config['url'] = $url;
-       $dzcurl->getHtml();
-     }
-     echo "登录成功!\n";
-     return true;
-   }
-   preg_match('#<input type="hidden" name="formhash" value="([^"]+)" />#Uis', $html, $match);
-   if( !isset($match[1])){
-      die("\n== Get Login Formhash Error!===\n");
-   }
-   $formhash = $match[1];
-   $dzcurl->config['url'] = $dzdomain.'/member.php?mod=logging&action=login&loginsubmit=yes&handlekey=login&loginhash=LvZit&inajax=1';
-  $dzcurl->postVal=array(
-  'username' => $uinfo['uname'],
-  'cookietime'=>2592000,
-  'answer' =>$uinfo['answer'],
-  'formhash' => $formhash,
-  'questionid' => $uinfo['questionid'],
-  'password'=>$uinfo['upwd']
-  );
-  $html = $dzcurl->getHtml();
-//var_dump($html);exit;
-// username
-  if(false !== stripos($html,", {'username':'")){
-     preg_match_all('#src="([^"]+)" reload="1"#Uis', $html, $match);
-//var_dump($match);exit;
-     foreach($match[1] as $url){
-       $dzcurl->config['url'] = $url;
-       $dzcurl->getHtml();
-     }
-     echo "登录成功!\n";
-     return true;
-  }
-  echo "登录失败!\n";
-  return false;
-}
-
-/**
-*mod=2 dixcuz 2.5,mod=3 dixcuz 3.0
-*/
-function post_thread($postdata,$mod = 2){
-   if(2 == $mod){
-      return postdz25data($postdata);
-   }else if(3 == $mod){
-      return postdz30data($postdata);
-   }
-   return false;
-}
-
-function postdz30data(&$data){
-   global $dzcurl,$dzdomain;
-   $dzcurl->config['url'] = $dzdomain.'/forum.php?mod=post&action=newthread&fid='.$data['fid'];
-  $res = $dzcurl->getHtml();
-  if(false == stripos($res,'<span class="pipe">|</span><a href="home.php?mod=spacecp">設置</a>')){
-     loginbbs();
-     $dzcurl->config['url'] = $dzdomain.'/forum.php?mod=post&action=newthread&fid='.$data['fid'];
-     $res = $dzcurl->getHtml();
-  }
-  $pattern = '#<input type="hidden" name="formhash" id="formhash" value="(.+)" />#Uis';
-  preg_match($pattern,$res,$match);
-  $formhash = $match[1];
-  $dzcurl->config['url'] = $dzdomain.'/forum.php?mod=post&action=newthread&fid='.$data['fid'].'&extra=&topicsubmit=yes';
-  $dzcurl->postVal=array(
-  'allownoticeauthor'=>1,
-  'creditlimit'=>'',
-  'formhash'=>$formhash,
-  'message'=>$data['message'],
-  'posttime'=>time(),
-  'price'=>'',
-  'readperm'=>0,
-  'replycredit_extcredits'=>0,
-  'replycredit_membertimes'=>1,
-  'replycredit_random'=>100,
-  'replycredit_times'=>1,
-  'replylimit'=>'',
-  'rewardfloor'=>'',
-  'rushreplyfrom'=>'',
-  'rushreplyto'=>'',
-  'save'=>'',
-  'stopfloor'=>'',
-  'typeid' => 0,
-  'subject'=>$data['title'],
-  'tags'=>$data['tags'],
-  'usesig'=>1,
-  'wysiwyg'=>1
-  );
-  $dzcurl->config['header'] = 1;
-  $res = $dzcurl->getHtml();
-  $dzcurl->config['header'] = 0;
-//var_dump($res);exit;
-  preg_match('#mod=viewthread&tid=(\d+)#i',$res,$match);
-  $tid = isset($match[1]) ? $match[1] : 0;
-  if(!$tid){
-    file_put_contents('post_error.html',$res);
-  }
-  return $tid;
-}
-
-function postdz25data(&$data){
-   global $dzcurl,$dzdomain;
-   $dzcurl->config['url'] = $dzdomain.'/forum.php?mod=post&action=newthread&fid='.$data['fid'];
-   $res = $dzcurl->getHtml();
-   if(false == stripos($res,'<span class="pipe">|</span><a href="home.php?mod=spacecp">設置</a>')){
-     loginbbs();
-     $dzcurl->config['url'] = $dzdomain.'/forum.php?mod=post&action=newthread&fid='.$data['fid'];
-     $res = $dzcurl->getHtml();
-  }
-   $pattern = '#<input type="hidden" name="formhash" id="formhash" value="(.+)" />#Uis';
-   preg_match($pattern,$res,$match);
-   $formhash = $match[1];
-   $dzcurl->config['url'] = $dzdomain."/forum.php?mod=post&action=newthread&fid={$data['fid']}&extra=&topicsubmit=yes";
-  $dzcurl->postVal = array(
-  'addfeed' => 1,
-  'allownoticeauthor' => 1,
-  'checkbox' => 0,
-  'contentage' => 'default',
-  'formhash' => $formhash,
-  'message' => $data['message'],
-  'newalbum' => '',
-  'posttime' => time(),
-  'readperm' => '',
-  'save' => '',
-  'subject' => $data['title'],
-  'tags' => $data['tags'],
-  'typeid' => $data['typeid'],
-  'uploadalbum' => '',
-  'usesig' => 1,
-  'wysiwyg' => 0
-  );
-  $dzcurl->config['header'] = 1;
-  $res = $dzcurl->getHtml();
-  $dzcurl->config['header'] = 0;
-  preg_match('#<p class="alert_btnleft"><a href="thread-(\d+)-1-1.html[^"]*">如果#Uis',$res,$match);
-  if( !isset($match[1])){
-file_put_contents('post_error.html',$res);
-     return false;
-  }
-  return $match[1];
-}
-
-function loginbbs($formhash = ''){
-   global $dzcurl,$dzdomain,$bbs_user;
-   $uinfo = $bbs_user[mt_rand(0,count($bbs_user) - 1)];
-   $dzcurl->config['cookie'] = 'discuz'.$uinfo['uid'];
-   $dzcurl->config['userAgent'] = $uinfo['userAgent'];
-
-   $dzcurl->config['url'] = $dzdomain.'/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1';
-  $dzcurl->postVal=array(
-  'username' => $uinfo['uname'],
-  'fastloginfield'=>'username',
-  'cookietime'=>2592000,
-  'quickforward'=>'yes',
-  'handlekey'=>'ls',
-  'password'=>$uinfo['upwd']
-  );
-  $res = $dzcurl->getHtml();
-//var_dump($res);exit;
-// username
-  if(false !== stripos($res,", {'username':'")){
-     echo "登录成功!\n";
-     return true;
-  }
-  echo "登录失败!\n";
-  return false;
-}
-
-function uploadPic(&$data){
-  $curl = curl_init();
-  $url = $data['url'];
-  unset($data['url']);
-  curl_setopt($curl, CURLOPT_URL, $url);
-  curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.3 (Windows; U; Windows NT 5.3; zh-TW; rv:1.9.3.25) Gecko/20110419 Firefox/3.7.12');
-  // curl_setopt($curl, CURLOPT_PROXY ,"http://189.89.170.182:8080");
-  curl_setopt($curl, CURLOPT_POST, count($data));
-  curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-  curl_setopt($curl, CURLOPT_FOLLOWLOCATION,true);
-  curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
-  curl_setopt($curl, CURLOPT_HEADER, 0);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-  $tmpInfo = curl_exec($curl);
-  if(curl_errno($curl)){
-    echo 'error',curl_error($curl),"\r\n";
+function getCatearticle($pid=0){
+  if(!$pid){
     return false;
   }
-  curl_close($curl);
-  $data['url'] = $url;
-  return $tmpInfo;
+  global $model,$_root,$cid;
+  //$flag=getlastgrabinfo();
+  
+  $cateList=$model->getCateInfoBypid($pid);
+  foreach($cateList as $cate){
+    if($cate['id']!=$cateid &&$flag){
+         continue;
+    }
+    if($cate['id']==$cateid){
+       $flag=false;
+    }
+    $cateurl=$_root.$cate['url'];
+    $cid=$cate['id'];
+    $status = getinfolist($cateurl);
+    if(6 == $status){
+       break;
+    }
+sleep(30);
+  }
+}
+
+function getSubCatearticle($cate){
+   global $model,$_root,$cid;
+   $cateurl=$_root.$cate['url'];
+   $cid=$cate['id'];
+   getinfolist($cateurl);
+}
+
+function getAllcate(){
+  global $model,$_root;
+  $html=getHtml($_root);
+  preg_match_all('#<li id="menu-item-\d+" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-\d+"><a href="http://www.vvtor.com/([^"]+)">([^<]+)</a></li>#Uis',$html,$match,PREG_SET_ORDER);
+  $pcate=$match;
+//var_dump($pcate);exit;
+  foreach($pcate as $pc){
+    $pid=$model->addCateByname(trim($pc[2]),0,trim($pc[1]));
+    if(!$pid){
+      continue;
+    }
+    echo "Parent Cate id $pid\r\n";
+sleep(2);
+  }
+  
+}
+function getinfolist(&$cateurl){
+  global $model,$psize,$pageno,$action,$_root,$cid;
+
+  for($i=1;$i<=60;$i++){
+//通过 atotal计算i的值
+    $ps = $i == 1?'':'/page/'.$i;
+    $html=getHtml($cateurl.$ps);
+
+    preg_match_all('#<a class="entry-thumb lazyload" href="http://www\.vvtor\.com/([^"]+)" title="([^"]+)" rel="bookmark" target="_blank"><img class="" src="http://www\.vvtor\.com/wordpress/wp-content/themes/NewsPro2/timthumb\.php\?src=([^&]+)&amp;h=130&amp;w=100&amp;zc=1" alt="([^"]+)" /></a>#Uis',$html,$matchs,PREG_SET_ORDER);
+echo '<pre>';var_dump($matchs);exit;
+    if(empty($matchs)){
+      echo ('Cate list Failed '.$cateurl."/第{$i}页\r\n");
+      return 6;
+    }
+
+    foreach($matchs as $list){
+      $oid=preg_replace('#[^\d]+#','',$list[1]);
+      $oname=trim($list[2]);
+//先判断是否存在
+      $aid=$model->checkArticleByOname($oname);
+      if($aid){
+         echo "{$aid}已存在未更新!\r\n";
+         continue;
+        return 6;
+      }
+      $purl=$_root.$list[1].'.html';
+      $ainfo=array('ourl'=>$purl,'name'=>$oname,'oid'=>$oid,'cid'=>$cid);
+      getinfodetail($ainfo);
+sleep(1);
+    }
+
+sleep(1);
+  }
+return 0;
+}
+
+function getinfodetail(&$data){
+  global $model,$cid,$bookimg,$strreplace,$str,$head,$end,$same,$pregreplace;
+  
+  $html=getHtml($data['ourl']);
+  if(!$html){
+    echo "获取html失败";exit;
+  }
+  //kw
+  preg_match('#<meta name="keywords" content="(.+)" />#U',$html,$match);
+  $data['keyword']=trim($match[1]);
+  //
+  preg_match($bookimg,$html,$match);
+  $data['thum']=trim($match[1]);
+  //
+  preg_match($detailPattern,$html,$match);
+  $data['ptime']=time();//strtotime(trim($match[1]));
+  $data['utime']=time();//strtotime(trim($match[2]));
+//  var_dump($match);exit;
+  
+  preg_match('#href="http://www\.vvtor\.com/(\?dl_id=\d+)">#Uis',$html,$match);
+  $str = $match[1];
+//  getTagpair($str,$html,$head,$end,$same);
+  $data['downurl']=$str;
+  //
+  preg_match('#</h2>\s+(<pre>.+</p>)\s+<hr />#Uis',$html,$match);
+  $str = $match[1];
+  
+/*
+  for($mk=0;$mk<2;$mk++){
+    $start=stripos($html,$head)+strlen($head);
+    $html=substr($html,$start);
+  }
+  $html=$head.$html;
+  getTagpair($str,$html,$head,$end,$same);
+*/
+  $data['intro']=$str;
+echo $str;exit;
+  foreach($strreplace as $val){
+    $data['intro']=str_replace($val['from'],$val['to'],$data['intro']);
+  }
+  foreach($pregreplace as $val){
+    $data['intro']=preg_replace($val['from'],$val['to'],$data['intro']);
+  }
+  $data['intro']=trim($data['intro']);
+  if(!$data['name'] || !$data['downurl']){
+     echo "抓取失败 $data[ourl] \r\n";
+     return false;
+  }
+  echo '<pre>';var_dump($data);exit;
+  $aid=$model->addArticle($data);
+  if(!$aid){
+    echo "添加失败! $data[ourl] \r\n";
+    return false;
+  }
+  echo "添加成功! $aid \r\n";
 }
 
 function getHtml($url){
@@ -274,7 +234,6 @@ function getHtml($url){
   curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
   curl_setopt($curl, CURLOPT_HEADER, 0);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($curl, CURLOPT_TIMEOUT, 30);
   $tmpInfo = curl_exec($curl);
   if(curl_errno($curl)){
     echo 'error',curl_error($curl),"\r\n";

@@ -32,6 +32,7 @@ class Edite extends Usrbase {
          $body = $this->input->post('body');
 //var_dump($body);exit;
          $this->emulemodel->setEmuleTopicByAid($this->userInfo['uid'],$data = array('header'=>$header,'body'=>$body),$this->userInfo['isadmin']);
+         $id = $header['id'];
     }
     $info = array();
     if($id){

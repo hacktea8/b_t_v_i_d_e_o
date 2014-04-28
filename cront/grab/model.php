@@ -23,192 +23,139 @@ class Model{
      return $res;
   }
 
-  function getNoneRenewList($channelid,$sid,$rtime,$limit = 100){
-     $sql = sprintf("SELECT vh.`setnum`,vh.`title`,pt.`vid`, pt.`sid`, pt.`ourl`,pt.`rtime` FROM `play_type` as pt LEFT JOIN `video_head` as vh ON (pt.vid=vh.id) WHERE pt.`sid`=%d AND  pt.`rtime`<=%d AND pt.`flag`=0 AND vh.`cid`=%d LIMIT %d",$sid,$rtime,$channelid,$limit);
-     $lists = $this->db->result_array($sql);
-     return $lists;
+  function geticiliemusubcate(){
+    $sql=sprintf('SELECT * FROM %s WHERE `flag`=1 AND `iciliemu` IS NOT NULL AND `pid`>0',$this->db->getTable('emule_cate'));
+    $res=$this->db->result_array($sql);
+     return $res;
   }
 
-  function updateTableData($table,$data,$where){
-    $sql = $this->db->update_string($this->db->getTable($table), $data, $where);
-    return $this->db->query($sql);
+  function geticiliParcate(){
+     $sql='SELECT `id`, `pid`, `iciliemu` FROM '.$this->db->getTable('emule_cate').' WHERE  `iciliemu` is not null AND pid=0';
+     return $this->db->result_array($sql);
   }
 
-  function addActorDataAndBind($data,$vid){
-    if( !$data['title']){
-       return false;
-    }
-    $sql = sprintf("SELECT `id` FROM `actor` WHERE `title`='%s' LIMIT 1",$this->db->escape($data['title']));
-    $row = $this->db->row_array($sql);
-    if(isset($row['id'])){
-      $aid = $row['id'];
-      $sql = sprintf("SELECT `aid` FROM `video_actor` WHERE `aid`=%d AND `vid`=%d LIMIT 1",$aid,$vid);
-      $row = $this->db->row_array($sql);
-      if(isset($row['aid'])){
-        return $row['aid'];
-      }
-      $data = array('vid'=>$vid,'aid'=>$aid);
-      $sql = $this->db->insert_string($this->db->getTable('video_actor'),$data);
-      $this->db->query($sql);
-      return $aid;
-    }
-    $sql = $this->db->insert_string($this->db->getTable('actor'),$data);
-    $this->db->query($sql);
-    $aid = $this->db->insert_id();
-    $data = array('vid'=>$vid,'aid'=>$aid);
-    $sql = $this->db->insert_string($this->db->getTable('video_actor'),$data);
-    $this->db->query($sql);
-    return $aid;
-  }
-
-  function addTypeDataAndBind($data,$vid){
-    if( !$data['title']){
-       return false;
-    }
-    $sql = sprintf("SELECT `id` FROM `cate` WHERE `title`='%s' LIMIT 1",$this->db->escape($data['title']));
-    $row = $this->db->row_array($sql);
-    if(isset($row['id'])){
-      $cid = $row['id'];
-      $sql = sprintf("SELECT `cid` FROM `video_cate` WHERE `cid`=%d AND `vid`=%d LIMIT 1",$cid,$vid);
-      $row = $this->db->row_array($sql);
-      if(isset($row['cid'])){
-        return $row['cid'];
-      }
-      $data = array('vid'=>$vid,'cid'=>$cid);
-      $sql = $this->db->insert_string($this->db->getTable('video_cate'),$data);
-      $this->db->query($sql);
-      return $aid;
-    }
-    $sql = $this->db->insert_string($this->db->getTable('cate'),$data);
-    $this->db->query($sql);
-    $cid = $this->db->insert_id();
-    $data = array('vid'=>$vid,'cid'=>$cid);
-    $sql = $this->db->insert_string($this->db->getTable('video_cate'),$data);
-    $this->db->query($sql);
-    return $aid;
-  }
-
-  function addVideoDramData($data){
-    if( !isset($data['param']) || !$data['vid']){
-       return 0;
-    }
-    $table = 'video_drama'.($data['vid']%10);
-    $table = $this->db->getTable($table);
-    $sql = sprintf("SELECT `id` FROM `%s` WHERE `playnum`=%d AND `vid`=%d LIMIT 1",$table,$data['playnum'],$data['vid']);
-    $row = $this->db->row_array($sql);
-    if( isset($row['id'])){
-      return $row['id'];
-    }
-    $sql = $this->db->insert_string($table,$data);
-    $this->db->query($sql);
-    return $this->db->insert_id();
-  }
-
-  function addData($table,$data){
-    if( !$data['title']){
-       return 0;
-    }
-    $sql = sprintf("SELECT `id` FROM %s WHERE `title`='%s' LIMIT 1",$this->db->getTable($table),$this->db->escape($data['title']));
-    $row = $this->db->row_array($sql);
-    if(isset($row['id'])){
-      return $row['id'];
-    }
-    $sql = $this->db->insert_string($this->db->getTable($table),$data);
-    $this->db->query($sql);
-    return $this->db->insert_id();
-  }
-
-  function addVideoByData($data_head,$data_body){
-    $data_play = array('vid'=>$vid,'sid'=>$data_head['site'],'rtime'=>time(),'ourl'=>$data_head['ourl']);
-    unset($data_head['site']);
-    unset($data_head['ourl']);
-    $check = $this->checkVideoByTitle($title);
-    $vid = $check;
-    if( !$check){
-      //增加导演
-      $actor_table = 'actor';
-      $data_head['director'] = is_array($data_head['director'])?array_shift($data_head['director']):$data_head['director'];
-      $did = $this->addData($actor_table,$data = array('title'=>$data_head['director']));
-      $data_head['director'] = $did;
-      //增加地区
-      $data_head['area'] = is_array($data_head['area'])?array_shift($data_head['area']):$data_head['area'];
-      $aid = $this->addData('area',$data = array('title'=>$data_head['area']));
-      $data_head['area'] = $aid;
-      //增加导航
-      $cid = $this->addData('channel',$data = array('title'=>$data_head['cid']));
-      $data_head['cid'] = $cid;
-      $actor = $data_head['actor'];
-      unset($data_head['actor']);
-      $type = $data_head['type'];
-      unset($data_head['type']);
-      unset($data_head['cate']);
-      $data_head['atime'] = time();
-      $sql = $this->db->insert_string($this->db->getTable('video_head'),$data_head);
-      $this->db->query($sql);
-      $vid = $this->db->insert_id();
-      if( !$vid){
+  function updateCateUrlByname($data=array()){
+    if(!$data){
         return false;
-      }
-      //增加演员
-      foreach($actor as $val){
-        $this->addActorDataAndBind(array('title'=>$val),$vid);
-      }
-      //增加类型
-      foreach($type as $val){
-        $this->addTypeDataAndBind(array('title'=>$val),$vid);
-      }
-      $data_play['vid'] = $data_body['id'] = $vid;
-      $sql = $this->db->insert_string($this->db->getTable('video_body'),$data_body);
-      $this->db->query($sql);
     }
-    $data_play['vid'] = $vid;
-    //增加播放源
-    $check = $this->checkVideoPlayType($data_play);
-    if( !$check){
-      $sql = $this->db->insert_string($this->db->getTable('play_type'),$data_play);
-      $this->db->query($sql);
+    $where=isset($data['pid'])?' AND pid='.$data['pid']:'';
+    $sql=sprintf('SELECT `id`,`pid` FROM '.$this->db->getTable('emule_cate').' WHERE `name`=\'%s\' %s LIMIT 1',mysql_real_escape_string($data['name']),$where);
+    $row=$this->db->row_array($sql);
+    if($row['id']){
+       unset($data['name']);
+       $vals='';
+       foreach($data as $k=>$v){
+          $vals.=','."`$k`='".mysql_real_escape_string($v)."'";
+       }
+       $vals=trim($vals,',');
+       $sql=sprintf('UPDATE '.$this->db->getTable('emule_cate').' SET %s WHERE `id`=%d LIMIT 1',$vals,$row['id']);
+       $this->db->query($sql);
+       return $row['id'];
     }
-    return $vid;
-  }
-
-  function checkVideoPlayType($data_play){
-    $sql = sprintf("SELECT `vid` FROM %s WHERE `vid`=%d AND `sid`=%d LIMIT 1", $this->db->getTable('play_type'), $data_play['vid'], $data_play['sid']);
-    $row = $this->db->row_array($sql);
-    return isset($row['vid']) ? $row['vid'] : 0;
-  }
-
-  function checkVideoByTitleSid($title,$sid){
-    $sql = sprintf("SELECT `id` FROM %s as vh LEFT JOIN %s as pt ON (vh.id = pt.vid) WHERE vh.`title`='%s' AND pt.`sid`=%d LIMIT 1", $this->db->getTable('video_head'), $this->db->getTable('play_type'), mysql_real_escape_string($title),$sid);
-    $row = $this->db->row_array($sql);
-    return isset($row['id']) ? $row['id'] : 0;
-  }
-
-  function checkVideoByTitle($title){
-    $sql = sprintf("SELECT `id` FROM %s WHERE `title`='%s' LIMIT 1",$this->db->getTable('video_head'),mysql_real_escape_string($title));
-    $row = $this->db->row_array($sql);
-    return isset($row['id']) ? $row['id'] : 0;
-  }
-
-  function truncate($table = ''){
-    if( !$table){
-      return false;
+    $keys=$vals='';
+    foreach($data as $k=>$v){
+       $keys.=','."`$k`";
+       $vals.=','."'".mysql_real_escape_string($v)."'";
     }
-    $sql = sprintf("truncate `%s`", $table);
+    $keys=trim($keys,',');
+    $vals=trim($vals,',');
+    $sql=sprintf('INSERT INTO '.$this->db->getTable('emule_cate').'(%s) VALUES (%s)',$keys,$vals);
+    $this->db->query($sql);
+    
+  }
+  
+  function addCateByname($cname,$pid=0,$ourl=''){
+    if(!$cname)
+       return false;
+
+    $sql=sprintf("SELECT `id` FROM `%s` WHERE `name`='%s' AND `pid`=%d LIMIT 1",$this->db->getTable('emule_cate'),mysql_real_escape_string($cname),$pid);
+    $row=$this->db->row_array($sql);
+    if($row['id']){
+       return $row['id'];
+    }
+    $sql=sprintf("INSERT INTO `%s`(`pid`, `name`, `url`) VALUES (%d,'%s','%s')",$this->db->getTable('emule_cate'),$pid,mysql_real_escape_string($cname),mysql_real_escape_string($ourl));
+    $this->db->query($sql);
+    $sql=sprintf("SELECT `id` FROM `%s` WHERE `name`='%s' AND `pid`=%d LIMIT 1",$this->db->getTable('emule_cate'),mysql_real_escape_string($cname),$pid);
+    $row=$this->db->row_array($sql);
+    if($row['id']){
+       return $row['id'];
+    }
+    return false;
+  }
+  function getCateInfoBypid($pid=0){
+     $sql=sprintf("SELECT `id`, `oid`, `pid`, `name`, `url` FROM `%s` WHERE `pid`=%d ",$this->db->getTable('emule_cate'),$pid);
+     $res=$this->db->result_array($sql);
+     return $res;
+  }
+  function checkArticleByOid($oid,$utime){
+    if(!$oid ||!$utime){
+       return false;
+    }
+    $sql=sprintf("SELECT `id` FROM `%s` WHERE  `oid`=%d AND `utime`=%d LIMIT 1",$this->db->getTable('emule_article'),$oid,$utime);
+    $row=$this->db->row_array($sql);
+    return $row['id'];
+  } 
+  function checkArticleByOname($oname){
+    if(!$oname){
+       return false;
+    }
+    $sql=sprintf("SELECT `id` FROM `%s` WHERE  `name`='%s' LIMIT 1",$this->db->getTable('emule_article'),mysql_real_escape_string($oname));
+    $row=$this->db->row_array($sql);
+    return $row['id'];
+  } 
+  function addArticle($data){
+    if(!$data){
+       return false;
+    }
+    $contents = array();
+    $contents['downurl'] = $data['downurl'];
+    unset($data['downurl']);
+    $contents['intro'] = $data['intro'];
+    $contents['keyword'] = '0';
+    $contents['relatdata'] = '0';
+    unset($data['intro']);
+    unset($data['oid']);
+    unset($data['keyword']);
+    unset($data['description']);
+    $sql=$this->db->insert_string($this->db->getTable('emule_article'),$data);
+    $this->db->query($sql);
+    $id = $this->db->insert_id();
+    if(!$id){
+       return false;
+    }
+    $contents['id'] = $id;
+    $sql=$this->db->insert_string($this->db->getTable('emule_article_content'),$contents);
+    $this->db->query($sql);
+    return $this->checkArticleByOname($data['name']);
+  }
+  function getArticleList($page = 1, $limit = 100){
+    $sql = sprintf('SELECT `id` FROM %s LIMIT %d,%d',$this->db->getTable('emule_article'),($page - 1)*$limit,$limit);
+    return $this->db->result_array($sql);
+  }
+  function getArticleByid($id){
+    $sql = sprintf('SELECT * FROM %s WHERE `id` = %d LIMIT 1',$this->db->getTable('emule_article_content'),$id);
+    return $this->db->row_array($sql);
+  }
+  function update_article_contents($data = array()){
+    if( !isset($data['id'])){
+       return false;
+    }
+    $where = array('id'=>$data['id']);
+    unset($data['id']);
+    $sql = $this->db->update_string($this->db->getTable('emule_article_content'),$data, $where);
     $this->db->query($sql);
     return true;
   }
-
-  function updateDataByTable($table,$data_head, $where){
-    $sql = $this->db->update_string($table, $data_head, $where);
-    return $this->db->query($sql);
+  function updateCateatotal(){
+    $sql='SELECT `id` FROM '.$this->db->getTable('emule_cate').' WHERE `pid`!=0';
+    $res=$this->db->result_array($sql);
+    foreach($res as $val){
+       $sql='UPDATE '.$this->db->getTable('emule_cate').' SET `atotal`= (SELECT count(`id`) FROM '.$this->db->getTable('emule_article').' WHERE `cid`='.$val['id'].') WHERE `id`='.$val['id'];
+       $this->db->query($sql);
+sleep(0.5);
+    }
+return true;
   }
-
-  function getNoCoverList($limit = 100){
-    $sql = sprintf("SELECT `id`,`thum` FROM %s WHERE `cover`=0 LIMIT %d", $this->db->getTable('video_head'), $limit);
-    $lists = $this->db->result_array($sql);
-    return $lists;
-  }
-
 }
 
 ?>

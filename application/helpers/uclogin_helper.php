@@ -4,38 +4,6 @@ defined('P_W') || define('P_W', '1');
 require_once BASEPATH.'../config_ucenter.php';
 require_once BASEPATH.'../uc_client/client.php';
 
-if( !function_exists('check_is_spider')){
- function check_is_spider(){
-  $return = 0;
-  $spider_agent = array('Baiduspider','Googlebot','Sosospider','360Spider','MSNBot','YoudaoBot','Sogou inst spider','Sogou spider2','Sogou blog','Sogou News Spider','Sogou Orion spider','JikeSpider');
-  if($_SERVER['REMOTE_ADDR'] === '127.0.0.1'){
-   return 1;
-  }
-  foreach($spider_agent as $agent){
-   if(false !== stripos($_SERVER['HTTP_USER_AGENT'])){
-    $return = 1;
-    break;
-   }
-  }
-  return $return;
- }
-}
-
-if( !function_exists('add_user_vip_group')){
-  function add_user_vip_group($post_data){
-    $key = '';
-    $param = strtrip($post_data,$key);
-    $context['http'] = array(
-      'method' => 'get',
-      'timeout' => 120,
-    );
-    $ct = stream_context_create($context);
-    $url = sprintf('http://www.hacktea8.com/51pay/payvip.php?%s',$param);
-    $html = file_get_contents($url,false,$ct);
-    return $html;
-  }
-}
-
 if ( ! function_exists('strcode'))
 {
  function strcode($string, $encode = true, $apikey = '') {
@@ -64,22 +32,6 @@ if ( ! function_exists('getcode'))
       $tmp .= $str[mt_rand(0,$length)];
     }
     return $tmp;
-  }
-}
-
-if ( ! function_exists('send_email'))
-{
-  function send_email($data){
-    ;
-    ;
-  }
-}
-
-if ( ! function_exists('activation_email'))
-{
-  function activation_email($data){
-    ;
-    ;
   }
 }
 

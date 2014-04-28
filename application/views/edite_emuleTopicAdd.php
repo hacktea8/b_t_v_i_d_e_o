@@ -42,7 +42,7 @@
         <td><input type="text" id="cover" name="header[cover]" value="<?php echo @$info['cover'];?>" class="input_1" style="width:200px"></td>
     </tr>
     <tr>
-        <td><img src="<?php echo $imguploadapiurl,@$info['cover'];?>" id="showcover"></td>
+        <td><img src="<?php echo $showimgapi,@$info['cover'];?>" id="showcover"></td>
     </tr>
     <tr valign="top">
         <td style="font-size:14px;">封面上传:</td>
