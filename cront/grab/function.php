@@ -111,7 +111,7 @@ sleep(30);
 
 function getSubCatearticle($cate){
    global $model,$_root,$cid;
-   $cateurl=$_root.$cate['url'];
+   $cateurl=$_root.$cate['oname'];
    $cid=$cate['id'];
    getinfolist($cateurl);
 }
@@ -130,25 +130,21 @@ function getAllcate(){
     echo "Parent Cate id $pid\r\n";
 sleep(2);
   }
-  
 }
 function getinfolist(&$cateurl){
   global $model,$psize,$pageno,$action,$_root,$cid;
-
-  for($i=1;$i<=60;$i++){
+  for($i=1;;$i++){
 //通过 atotal计算i的值
     $ps = $i == 1?'':'/page/'.$i;
     $html=getHtml($cateurl.$ps);
-
     preg_match_all('#<a class="entry-thumb lazyload" href="http://www\.vvtor\.com/([^"]+)" title="([^"]+)" rel="bookmark" target="_blank"><img class="" src="http://www\.vvtor\.com/wordpress/wp-content/themes/NewsPro2/timthumb\.php\?src=([^&]+)&amp;h=130&amp;w=100&amp;zc=1" alt="([^"]+)" /></a>#Uis',$html,$matchs,PREG_SET_ORDER);
-echo '<pre>';var_dump($matchs);exit;
+//echo '<pre>';var_dump($matchs);exit;
     if(empty($matchs)){
       echo ('Cate list Failed '.$cateurl."/第{$i}页\r\n");
       return 6;
     }
-
     foreach($matchs as $list){
-      $oid=preg_replace('#[^\d]+#','',$list[1]);
+      $oid=preg_replace('#\.html#','',$list[1]);
       $oname=trim($list[2]);
 //先判断是否存在
       $aid=$model->checkArticleByOname($oname);
@@ -157,9 +153,12 @@ echo '<pre>';var_dump($matchs);exit;
          continue;
         return 6;
       }
-      $purl=$_root.$list[1].'.html';
-      $ainfo=array('ourl'=>$purl,'name'=>$oname,'oid'=>$oid,'cid'=>$cid);
+      $purl=$_root.$list[1];
+      $thum = trim($list[3]);
+      $ainfo=array('ourl'=>$purl,'name'=>$oname,'thum'=>$thum,'cid'=>$cid);
+//print_r($ainfo);exit;
       getinfodetail($ainfo);
+exit;
 sleep(1);
     }
 
@@ -169,8 +168,7 @@ return 0;
 }
 
 function getinfodetail(&$data){
-  global $model,$cid,$bookimg,$strreplace,$str,$head,$end,$same,$pregreplace;
-  
+  global $model,$cid,$strreplace,$pregreplace,$_root;
   $html=getHtml($data['ourl']);
   if(!$html){
     echo "获取html失败";exit;
@@ -179,32 +177,21 @@ function getinfodetail(&$data){
   preg_match('#<meta name="keywords" content="(.+)" />#U',$html,$match);
   $data['keyword']=trim($match[1]);
   //
-  preg_match($bookimg,$html,$match);
-  $data['thum']=trim($match[1]);
-  //
-  preg_match($detailPattern,$html,$match);
   $data['ptime']=time();//strtotime(trim($match[1]));
   $data['utime']=time();//strtotime(trim($match[2]));
 //  var_dump($match);exit;
-  
   preg_match('#href="http://www\.vvtor\.com/(\?dl_id=\d+)">#Uis',$html,$match);
   $str = $match[1];
 //  getTagpair($str,$html,$head,$end,$same);
   $data['downurl']=$str;
+  $data['ourl'] = str_replace($_root,'',$data['ourl']);
+  $data['thum'] = str_replace($_root,'',$data['thum']);
   //
   preg_match('#</h2>\s+(<pre>.+</p>)\s+<hr />#Uis',$html,$match);
   $str = $match[1];
-  
-/*
-  for($mk=0;$mk<2;$mk++){
-    $start=stripos($html,$head)+strlen($head);
-    $html=substr($html,$start);
-  }
-  $html=$head.$html;
-  getTagpair($str,$html,$head,$end,$same);
-*/
   $data['intro']=$str;
-echo $str;exit;
+  //preg_match_all('#<img .*src="([^"]+)"#Uis',$data['intro'],$match);
+  //echo '<pre>';var_dump($match);exit;
   foreach($strreplace as $val){
     $data['intro']=str_replace($val['from'],$val['to'],$data['intro']);
   }
@@ -216,7 +203,7 @@ echo $str;exit;
      echo "抓取失败 $data[ourl] \r\n";
      return false;
   }
-  echo '<pre>';var_dump($data);exit;
+//  echo '<pre>';var_dump($data);exit;
   $aid=$model->addArticle($data);
   if(!$aid){
     echo "添加失败! $data[ourl] \r\n";

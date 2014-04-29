@@ -10,7 +10,7 @@ class DB_MYSQL{
   var $user     = "";
   var $password = "";
 
-  var $db_pre   = "pw_";
+  var $db_pre   = "bt_";
   var $link_id  = 0;
   var $query_id = 0;
   var $record   = array();

@@ -146,7 +146,8 @@ class emuleModel extends baseModel{
      if($uid && !$isadmin)
        $where = sprintf(' AND `uid`=%d LIMIT 1',$uid);
 
-     $sql = sprintf('SELECT %s FROM %s as a LEFT JOIN %s as ac ON (a.id=ac.id) WHERE a.id =%d  %s',$this->_datatopicStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix('emule_article_content'),$aid,$where);
+     $table = sprintf("emule_article_content%d",$aid%10);
+     $sql = sprintf('SELECT %s FROM %s as a LEFT JOIN %s as ac ON (a.id=ac.id) WHERE a.id =%d  %s',$this->_datatopicStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix($table),$aid,$where);
      $data = array();
      $data['info'] = $this->db->query($sql)->row_array();
      $data['postion'] = $this->getsubparentCate($data['info']['cid']);
@@ -176,7 +177,8 @@ class emuleModel extends baseModel{
         unset($header['id']);
         $sql = $this->db->update_string($this->db->dbprefix('emule_article'),$header,$where);
         $this->db->query($sql);
-        $sql = $this->db->update_string($this->db->dbprefix('emule_article_content'),$body,$where);
+        $table = sprintf("emule_article_content%d",$where['id']%10);
+        $sql = $this->db->update_string($this->db->dbprefix($table),$body,$where);
         $this->db->query($sql);
         return $data['id'];
      }
@@ -186,7 +188,8 @@ class emuleModel extends baseModel{
      $this->db->query($sql);
      $id = $this->db->insert_id();
      $body['id'] = $id;
-     $sql = $this->db->insert_string($this->db->dbprefix('emule_article_content'),$info);
+     $table = sprintf("emule_article_content%d",$id%10);
+     $sql = $this->db->insert_string($this->db->dbprefix($table),$info);
      $this->db->query($sql);
      return $id;
   }
@@ -203,7 +206,8 @@ class emuleModel extends baseModel{
      $where = array('id'=>$aid);
      $sql = $this->db->delete($this->db->dbprefix('emule_article'),$where);
      $this->db->query($sql);
-     $sql = $this->db->delete($this->db->dbprefix('emule_article_content'),$where);
+     $table = sprintf("emule_article_content%d",$aid%10);
+     $sql = $this->db->delete($this->db->dbprefix($table),$where);
      $this->db->query($sql);
      return $aid;
   }

@@ -18,20 +18,9 @@ class Model{
   }
 
   function getsubcatelist(){
-    $sql=sprintf('SELECT `id`, `pid`, `name`,`url` FROM %s WHERE `flag`=1 AND `pid`>0',$this->db->getTable('emule_cate'));
+    $sql=sprintf('SELECT * FROM %s WHERE `flag`=1 ',$this->db->getTable('emule_cate'));
     $res=$this->db->result_array($sql);
      return $res;
-  }
-
-  function geticiliemusubcate(){
-    $sql=sprintf('SELECT * FROM %s WHERE `flag`=1 AND `iciliemu` IS NOT NULL AND `pid`>0',$this->db->getTable('emule_cate'));
-    $res=$this->db->result_array($sql);
-     return $res;
-  }
-
-  function geticiliParcate(){
-     $sql='SELECT `id`, `pid`, `iciliemu` FROM '.$this->db->getTable('emule_cate').' WHERE  `iciliemu` is not null AND pid=0';
-     return $this->db->result_array($sql);
   }
 
   function updateCateUrlByname($data=array()){
@@ -73,14 +62,9 @@ class Model{
     if($row['id']){
        return $row['id'];
     }
-    $sql=sprintf("INSERT INTO `%s`(`pid`, `name`, `url`) VALUES (%d,'%s','%s')",$this->db->getTable('emule_cate'),$pid,mysql_real_escape_string($cname),mysql_real_escape_string($ourl));
+    $sql=sprintf("INSERT INTO `%s`(`pid`, `name`, `oname`) VALUES (%d,'%s','%s')",$this->db->getTable('emule_cate'),$pid,mysql_real_escape_string($cname),mysql_real_escape_string($ourl));
     $this->db->query($sql);
-    $sql=sprintf("SELECT `id` FROM `%s` WHERE `name`='%s' AND `pid`=%d LIMIT 1",$this->db->getTable('emule_cate'),mysql_real_escape_string($cname),$pid);
-    $row=$this->db->row_array($sql);
-    if($row['id']){
-       return $row['id'];
-    }
-    return false;
+    return $this->db->insert_id();
   }
   function getCateInfoBypid($pid=0){
      $sql=sprintf("SELECT `id`, `oid`, `pid`, `name`, `url` FROM `%s` WHERE `pid`=%d ",$this->db->getTable('emule_cate'),$pid);
@@ -102,31 +86,33 @@ class Model{
     $sql=sprintf("SELECT `id` FROM `%s` WHERE  `name`='%s' LIMIT 1",$this->db->getTable('emule_article'),mysql_real_escape_string($oname));
     $row=$this->db->row_array($sql);
     return $row['id'];
+  }
+  function copy_array($array,$keys){
+    $return = array();
+    foreach($keys as $k){
+      if(isset($array[$k])){
+        $return[$k] = $array[$k];
+      }
+    }
+    return $return;
   } 
   function addArticle($data){
     if(!$data){
        return false;
     }
-    $contents = array();
-    $contents['downurl'] = $data['downurl'];
-    unset($data['downurl']);
-    $contents['intro'] = $data['intro'];
-    $contents['keyword'] = '0';
-    $contents['relatdata'] = '0';
-    unset($data['intro']);
-    unset($data['oid']);
-    unset($data['keyword']);
-    unset($data['description']);
-    $sql=$this->db->insert_string($this->db->getTable('emule_article'),$data);
+    $contents = $this->copy_array($data,array('downurl','keyword','downurl','intro'));
+    $head = $this->copy_array($data,array('ptime','utime','cid','thum','name','ourl'));
+    $sql=$this->db->insert_string($this->db->getTable('emule_article'),$head);
     $this->db->query($sql);
     $id = $this->db->insert_id();
     if(!$id){
        return false;
     }
     $contents['id'] = $id;
-    $sql=$this->db->insert_string($this->db->getTable('emule_article_content'),$contents);
+    $table = sprintf("emule_article_content%d",$id%10);
+    $sql=$this->db->insert_string($this->db->getTable($table),$contents);
     $this->db->query($sql);
-    return $this->checkArticleByOname($data['name']);
+    return $id;
   }
   function getArticleList($page = 1, $limit = 100){
     $sql = sprintf('SELECT `id` FROM %s LIMIT %d,%d',$this->db->getTable('emule_article'),($page - 1)*$limit,$limit);

@@ -2,13 +2,15 @@
 
 $APPPATH=dirname(__FILE__).'/';
 include_once($APPPATH.'../db.class.php');
+include_once($APPPATH.'config.php');
 
 $pattern = '/ed2kers/grab.php';
 require_once $APPPATH.'singleProcess.php';
 
 $db=new DB_MYSQL();
 
-$data = array('url' => 'http://img.hacktea8.com/imgapi/uploadurl?seq=', 'imgurl'=>'');
+$data = array('url' => 'http://img.hacktea8.com/fileapi/uploadurl?seq=', 'imgurl'=>'');
+$file_data = array('url' => 'http://img.hacktea8.com/fileapi/uploadurl?seq=', 'imgurl'=>'','filename'=>'');
 $task = 600;
 while($task){
 $list = getnocoverlist();
@@ -18,8 +20,7 @@ break;
 }
 foreach($list as $val){
 if('http://' != substr($val['thum'],0,7)){
-  $val['thum'] = str_replace('/res','',$val['thum']);
-  $val['thum'] = 'http://i.ed2kers.com/'.$val['thum'];
+  $val['thum'] = $_root.$val['thum'];
 }
 echo "== $val[thum] ==\n";
 $data['imgurl'] = $val['thum'];
@@ -37,6 +38,7 @@ if(0 == $cover){
   setcoverByid(4,$val['id']);
   continue;
 }
+  $upload_data['filename'] = $data['oname'].'.torrent';
 //
 setcoverByid($cover,$val['id']);
 sleep(5);

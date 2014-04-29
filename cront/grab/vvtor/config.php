@@ -9,8 +9,8 @@ $_root='http://www.vvtor.com/';
 //
 //
 $strreplace=array(
-array('from'=>'www.vvtor.com','to'=>'btv.hacktea8.com')
-,array('from'=>'\"','to'=>'"')
+#array('from'=>'www.vvtor.com','to'=>'btv.hacktea8.com')
+array('from'=>'\"','to'=>'"')
 ,array('from'=>'\r\n','to'=>'')
 ,array('from'=>'\n','to'=>'')
 );
