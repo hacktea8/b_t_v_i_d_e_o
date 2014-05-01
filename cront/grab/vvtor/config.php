@@ -1,10 +1,6 @@
 <?php
 
 $cateid=2;$pageno=1;
-$head='<div class="destext">';
-$end='</div>';
-$same='<div';
-$str='';
 $_root='http://www.vvtor.com/';
 //
 //

@@ -158,7 +158,7 @@ function getinfolist(&$cateurl){
       $ainfo=array('ourl'=>$purl,'name'=>$oname,'thum'=>$thum,'cid'=>$cid);
 //print_r($ainfo);exit;
       getinfodetail($ainfo);
-exit;
+//exit;
 sleep(1);
     }
 
@@ -182,7 +182,6 @@ function getinfodetail(&$data){
 //  var_dump($match);exit;
   preg_match('#href="http://www\.vvtor\.com/(\?dl_id=\d+)">#Uis',$html,$match);
   $str = $match[1];
-//  getTagpair($str,$html,$head,$end,$same);
   $data['downurl']=$str;
   $data['ourl'] = str_replace($_root,'',$data['ourl']);
   $data['thum'] = str_replace($_root,'',$data['thum']);

@@ -38,9 +38,40 @@ if(0 == $cover){
   setcoverByid(4,$val['id']);
   continue;
 }
-  $upload_data['filename'] = $data['oname'].'.torrent';
+$info = getvideobyid($val['id']);
+$filename = str_replace('.html','.torrent',$val['ourl']);
+$file_data['filename'] = $filename;
+$file_data['imgurl'] = $_root.$info['downurl'];
+//var_dump($file_data);exit;
+$downurl = getHtml($file_data);
+//去除字符串前3个字节
+$downurl = substr($downurl,3);
+if(strlen($downurl)<10){
+sleep(600);exit;
+}
+//echo $downurl,"\n";
+preg_match_all('#<img .*src="([^"]+)"#Uis',$info['intro'],$match);
+foreach($match[1] as $img){
+  $img_url = $img;
+ if('http://' != substr($img,0,7)){
+  $img_url = $_root.$img;
+ }
+//echo "== $val[thum] ==\n";
+$data['imgurl'] = $img_url;
+$covers = getHtml($data);
+//去除字符串前3个字节
+$covers = substr($covers,3);
+//echo $covers,"\n";
+$img_str = 'IMG_API_URL='.$covers;
+$info['intro'] = str_replace($img,$img_str,$info['intro']);
+}
+$info['intro'] = droptags($info['intro']);
+$set_data = array('download'=>$downurl,'intro'=>$info['intro']);
+//var_dump($set_data);exit;
+setcontentdata($set_data,$val['id']);
 //
 setcoverByid($cover,$val['id']);
+//echo $val['id'],"\n",exit;
 sleep(5);
 }
 //var_dump($list);exit;
@@ -53,11 +84,27 @@ file_put_contents('imgres.txt',$val['id']);
 
 function getnocoverlist($limit = 20){
     global $db;
-    $sql=sprintf('SELECT `id`,`thum` FROM %s WHERE `cover`=\'0\' LIMIT %d',$db->getTable('emule_article'),$limit);
+    $sql=sprintf('SELECT `id`,`sitetype`,`thum`,`ourl` FROM %s WHERE `cover`=\'0\' LIMIT %d',$db->getTable('emule_article'),$limit);
     $res=$db->result_array($sql);
     return $res;
 }
-
+function getcontenttable($id){
+  return sprintf("emule_article_content%d",$id%10);
+}
+function getvideobyid($id){
+  global $db;
+  $table = getcontenttable($id);
+  $sql=sprintf('SELECT  `downurl`, `intro` FROM %s WHERE `id`=%d LIMIT 1',$db->getTable($table),$id);
+  $row = $db->row_array($sql);
+  return $row;
+}
+function setcontentdata($data,$id){
+  global $db;
+  $table = getcontenttable($id);
+  $sql = $db->update_string($db->getTable($table),$data,array('id'=>$id));
+  $db->query($sql);
+  return true;
+}
 function setcoverByid($cover = '',$id = 0){
     if(!$id){
        return false;
@@ -88,4 +135,20 @@ function getHtml(&$data){
   $data['url'] = $url;
   return $tmpInfo;
 }
-
+function droptags($html){
+global $_root;
+$str_replace = array(
+array('from'=>'</a>','to'=>'')
+,array('from'=>substr($_root,0,-1),'to'=>'http://btv.hacktea8.com/')
+);
+$preg_replace = array(
+array('from'=>'#<a[^>]+>#Uis','to'=>'')
+);
+foreach($str_replace as $v){
+  $html = str_replace($v['from'],$v['to'],$html);
+}
+foreach($preg_replace as $v){
+  $html = preg_replace($v['from'],$v['to'],$html);
+}
+return $html;
+}
