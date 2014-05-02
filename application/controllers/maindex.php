@@ -1,27 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 require_once 'usrbase.php';
-class Index extends Usrbase {
+class Maindex extends Usrbase {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 */
   public function __construct(){
     parent::__construct();
-//    $this->load->model('indexmodel');
 //var_dump($this->viewData);exit;
   }
   public function index()
   {
-    $c = $this->input->get('c');
-    if('topic' == $c){
-      $aid = $this->input->get('aid');
-      $this->topic($aid);return true;
-    }
-    if('list' == $c){
-      $cid = $this->input->get('cid');
-      $this->lists($cid);return true;
-    }
     $view = BASEPATH.'../';
     if(!is_writeable($view)){
        die($view.' is not write!');
@@ -30,8 +16,8 @@ class Index extends Usrbase {
     $lock = $view . '.lock';
     if( !file_exists($view) || (time() - filemtime($view)) > 3*3600 ){
       if(!file_exists($lock)){
-        
-        $this->assign(array('_a'=>'index','emuleIndex'=>$this->mem->get('emutest-emuleIndexinfo')));
+        $emuleIndex = $this->emulemodel->getEmuleIndexData();
+        $this->assign(array('_a'=>'index','emuleIndex'=>$emuleIndex));
         $this->view('index_index');
         $output = $this->output->get_output();
         file_put_contents($lock, '');
@@ -150,7 +136,6 @@ class Index extends Usrbase {
     $this->_rewrite_list_url($data['postion']);
     $this->_rewrite_article_url($data['info']);
     $data['info'] = $data['info'][0];
-    $data['info']['relatdata'] = is_array($data['info']['relatdata']) ? $data['info']['relatdata'] : array();
     $data['info']['fav'] = 0;
     $cid = $data['info']['cid'] ? $data['info']['cid'] : 0;
     $cpid = isset($data['postion'][0]['id'])?$data['postion'][0]['id']:0;
@@ -159,15 +144,17 @@ class Index extends Usrbase {
     foreach($data['postion'] as $row){
        $kw .= $row['name'].',';
     }
-    $keywords = $data['info']['name'].','.$kw.$this->seo_keywords;
+    $default_seo = $data['info']['keyword']?$data['info']['keyword']:$this->seo_keywords;
+    $keywords = $data['info']['name'].','.$kw.$default_seo;
     $title = $data['info']['name'];
-    $data['info']['intro'] = str_replace('www.ed2kers.com',$this->viewData['domain'],$data['info']['intro']);
+    //$data['info']['intro'] = str_replace('www.ed2kers.com',$this->viewData['domain'],$data['info']['intro']);
+    $data['info']['intro'] = str_replace(array('<img </td>','IMG_API_URL='),array('<img ',$this->showimgapi),$data['info']['intro']);
     // not VIP Admin check verify
     $emu_aid = isset($_COOKIE['hk8_verify_topic_dw'])?strcode($_COOKIE['hk8_verify_topic_dw'],false):'';
     $emu_aid = explode("\t",$emu_aid);
     $emu_aid = $emu_aid[0];
     $verifycode = '';
-    if( !($emu_aid == $data['info']['id'] || $this->userInfo['isvip'] || $this->userInfo['isadmin'])){
+    if( 0 && !($emu_aid == $data['info']['id'] || $this->userInfo['isvip'] || $this->userInfo['isadmin'])){
        $data['info']['downurl'] = '';
        $data['info']['vipdwurl'] = '';
        $this->load->library('verify');
@@ -176,7 +163,7 @@ class Index extends Usrbase {
     $isCollect = $this->emulemodel->getUserIscollect($this->userInfo['uid'],$data['info']['id']);
     $this->assign(array('isCollect'=>$isCollect,'verifycode'=>$verifycode,'seo_title'=>$title,'seo_keywords'=>$keywords,'cid'=>$cid,'cpid'=>$cpid,'info'=>$data['info'],'postion'=>$data['postion'],'aid'=>$aid)); 
     $ip = $this->input->ip_address();
-    $key = sprintf('emuhitslog:%s:%d',$ip,$aid);
+    $key = sprintf('hitslog:%s:%d',$ip,$aid);
 //var_dump($this->redis->exists($key));exit;
     if(!$this->redis->exists($key)){
        $this->redis->set($key, 1, $this->expirettl['6h']);
@@ -250,6 +237,16 @@ class Index extends Usrbase {
     $url = $_SERVER['HTTP_REFERER'];
 //echo $url;exit;
     redirect($url);
+  }
+  public function crontab(){
+    $lock = BASEPATH.'/../crontab_loc.txt';
+    if(file_exists($lock) && time()-filemtime($lock)<6*3600){
+       return false;
+    }
+    $this->emulemodel->setCateVideoTotal();
+    file_put_contents($lock,'');
+    chmod($lock,0777);
+    echo 1;exit;
   }
   public function isUserInfo(){
     $data = array('status'=>0);

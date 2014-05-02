@@ -1,13 +1,60 @@
 <?php
 require_once 'basemodel.php';
 class emuleModel extends baseModel{
-  protected $_dataStruct = 'a.`id`, a.`cid`, a.`uid`, a.`name`, a.`collectcount`, a.`ptime`, a.`utime`, a.`thum`, a.`cover`, a.`hits`';
-  protected $_datatopicStruct = 'a.`id`, a.`cid`, a.`uid`, a.`name`, ac.`relatdata`, a.`collectcount`, ac.`keyword`, ac.`downurl`, ac.`vipdwurl`, a.`ptime`, a.`utime`, ac.`intro`, a.`thum`, a.`cover`, a.`hits`';
+  protected $_dataStruct = 'a.`id`, a.`cid`, a.`uid`, a.`name`, a.`collectcount`, a.`ptime`, a.`utime`, a.`cover`, a.`hits`';
+  protected $_datatopicStruct = 'a.`id`,a.`ourl`, a.`cid`, a.`uid`, a.`name`, a.`collectcount`, ac.`keyword`, ac.`download`, ac.`vipdwurl`, a.`ptime`, a.`utime`, ac.`intro`, a.`cover`, a.`hits`';
 
   public function __construct(){
-     parent::__construct();
+    parent::__construct();
   }
-
+  public function setCateVideoTotal(){
+    $cate = $this->getCateByCid(0);
+    foreach($cate as $v){
+      $k = $v['id'];
+      $sql = sprintf('UPDATE %s SET`atotal`=(SELECT COUNT(*) FROM %s WHERE `cid`=%d) WHERE `id`=%d LIMIT 1',$this->db->dbprefix('emule_cate'),$this->db->dbprefix('emule_article'),$k,$k);
+      $this->db->query($sql);
+    }
+    return 1;
+  }
+  public function get_link($mod,$site_url='',$p1='',$p2=0,$p3=1,$p4=''){
+    $url = '';
+    if('cate' == $mod){
+      $url = sprintf('%s/maindex/lists/%d/%d/%d.shtml',$site_url,$p1,$p2,$p3);
+    }elseif('topic' == $mod){
+      $url = sprintf('%s/maindex/topic/%d.shtml',$site_url,$p1);
+    }
+    return $url;
+  }
+  public function getEmuleIndexData(){
+    $emuleIndex = $tmp = array();
+    $limit = 15;
+    $tmp = $this->getArticleListByCid(0,$order=0,$page=1,$limit);
+    $emuleIndex['new'] = $tmp['emulelist'];
+    $tmp = $this->getArticleListByCid(0,$order=1,$page=1,$limit);
+    $emuleIndex['rand'] = $tmp['emulelist'];
+    $tmp = $this->getArticleListByCid(0,$order=2,$page=1,$limit);
+    $emuleIndex['hot'] = $tmp['emulelist'];
+    $cate = $this->getCateByCid(0);
+    foreach($cate as $v){
+      $k = $v['id'];
+      $tmp = $this->getArticleListByCid($k,$order=2,$page=1,$limit);
+      $emuleIndex['catehot'][] = array('list'=>$tmp['emulelist'],'name'=>$v['name'],'url'=>$this->get_link('cate','',$k));
+    }
+    $limits = 25;
+    foreach($cate as $v){
+      $k = $v['id'];
+      $list = array();
+      $subcate = array(array('name'=>'最新','url'=>$this->get_link('cate','',$k,0)),array('name'=>'随机','url'=>$this->get_link('cate','',$k,1)));
+      $tmp = $this->getArticleListByCid($k,$order=0,$page=1,$limits);
+      $list[0] = $tmp['emulelist'];
+      $tmp = $this->getArticleListByCid($k,$order=1,$page=1,$limits);
+      $list[1] = $tmp['emulelist'];
+      $tmp = $this->getArticleListByCid($k,$order=1,$page=2,$limits+10);
+      $rand = $tmp['emulelist'];
+      $emuleIndex['topiclist'][] = array('rand'=>$rand,'subcate'=>array('cate'=>$subcate,'list'=>$list));
+    }
+    return $emuleIndex;
+  }
   public function getUserCollectList($uid,$order=0,$page=1,$limit=25){
     if( !$uid){
       return false;
@@ -24,6 +71,7 @@ class emuleModel extends baseModel{
     foreach($list as &$v){
       $v['utime'] = date('Y-m-d H:i:s', $v['utime']);
       $v['atime'] = date('Y-m-d H:i:s', $v['atime']);
+      $v['url'] = $this->get_link('topic','',$v['id']);
     }
     return $list;
   }
@@ -89,15 +137,16 @@ class emuleModel extends baseModel{
      if($cid){
        $cids = $this->getAllCateidsByCid($cid);
        $cids = implode(',',$cids);
-       $where = ' a.`cid` in ('.$cids.')  ';
+       $where = ' a.`cid` in ('.$cids.') AND ';
      }
-     $sql = sprintf('SELECT %s,c.`name` as cname,c.atotal FROM %s as a LEFT JOIN %s as c ON (a.cid=c.id) WHERE %s AND a.`flag`=1 AND c.flag=1 %s LIMIT %d,%d',$this->_dataStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix('emule_cate'),$where,$order,$page,$limit);
+     $sql = sprintf('SELECT %s,c.`name` as cname,c.atotal FROM %s as a LEFT JOIN %s as c ON (a.cid=c.id) WHERE %s a.`flag`=1 AND c.flag=1 %s LIMIT %d,%d',$this->_dataStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix('emule_cate'),$where,$order,$page,$limit);
 //echo $sql;exit;
      $data = array();
      $data['emulelist'] = $this->db->query($sql)->result_array();
      foreach($data['emulelist'] as &$val){
        $val['ptime'] = date('Y-m-d', $val['ptime']);
        $val['utime'] = date('Y/m/d', $val['utime']);
+       $val['url'] = $this->get_link('topic','',$val['id']);
      }
      $data['postion'] = $this->getsubparentCate($cid);
      $data['subcatelist'] = $this->getAllSubcateByCid($cid);
@@ -150,6 +199,7 @@ class emuleModel extends baseModel{
      $sql = sprintf('SELECT %s FROM %s as a LEFT JOIN %s as ac ON (a.id=ac.id) WHERE a.id =%d  %s',$this->_datatopicStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix($table),$aid,$where);
      $data = array();
      $data['info'] = $this->db->query($sql)->row_array();
+     $data['info']['url'] = $this->get_link('topic','',$data['info']['id']);
      $data['postion'] = $this->getsubparentCate($data['info']['cid']);
      return $data;
   }
@@ -243,7 +293,7 @@ class emuleModel extends baseModel{
 
   public function getHotTopic($order = 'hits',$limit=15){
      $order = $order ? ' `ptime` DESC ': ' `hits` DESC ';
-     $sql   = sprintf('SELECT `id`, `name`, `thum`,`cover` FROM %s WHERE `flag`=1 ORDER BY %s LIMIT %d', $this->db->dbprefix('emule_article'), $order, $limit); 
+     $sql   = sprintf('SELECT `id`, `name`,`cover` FROM %s WHERE `flag`=1 ORDER BY %s LIMIT %d', $this->db->dbprefix('emule_article'), $order, $limit); 
      return $this->db->query($sql)->result_array();
   }
 
@@ -266,9 +316,6 @@ class emuleModel extends baseModel{
 
      $sql = sprintf('SELECT `id`, `pid`, `name`, `atotal` FROM %s WHERE `pid` = 0 AND `flag` = 1',$this->db->dbprefix('emule_cate'));
      return $this->db->query($sql)->result_array();
-  }
-  public function getdata(){
-     return 9999999;
   }
 }
 ?>

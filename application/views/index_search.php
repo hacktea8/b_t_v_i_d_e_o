@@ -106,7 +106,7 @@ $row['update_timestamp']=date('Y-m-d',$row['update_timestamp']);
                       </p>
                   </div>
                   <div class="li-contnet">
-                      <a href="<?php echo $row['url'];?>" class="pic"><img onerror="javascript:this.src='<?php echo $img_url;?>show404.jpg';" src="<?php echo $row['thumbnail'];?>" title="<?php echo strip_tags($row['title']); ?>" alt="<?php echo strip_tags($row['title']);?>" /></a>
+                      <a href="<?php echo $row['url'];?>" class="pic"><img onerror="javascript:this.src='<?php echo $img_url;?>show404.jpg';" src="<?php echo $row['thumbnail'];?>&w=100" title="<?php echo strip_tags($row['title']); ?>" alt="<?php echo strip_tags($row['title']);?>" /></a>
 <!--
                       <p class="soft-info ext">
                           <span class="item"><span class="til">语言：</span>简体中文</span>

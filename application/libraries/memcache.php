@@ -6,7 +6,7 @@ defined('BASEPATH') || exit('Forbidden');
 */
 class Memcache{
   private $_memcached;	// Holds the memcached object
-
+  public $pre = 'btv';
   protected $_memcache_conf = array(
 			      'default' => array(
 			      'hostname'=> '127.0.0.1',
@@ -25,6 +25,9 @@ class Memcache{
      }
 
   }
+  public function getkey($key){
+    return substr($key,0,strlen($this->pre)) == $this->pre?$key:$this->pre.$key;
+  }
 // ------------------------------------------------------------
   /**
    * Fetch from cache
@@ -32,10 +35,10 @@ class Memcache{
    * @param 	mixed		unique key id
    * @return 	mixed		data on success/false on failure
    */	
-  public function get($id){	
-     $data = $this->_memcached->get($id);
-		
-	return (is_array($data)) ? $data[0] : FALSE;
+  public function get($id){
+     $id = $this->getkey($id);
+     $data = $this->_memcached->get($id);		
+     return (is_array($data)) ? $data[0] : FALSE;
   }
 
 // --------------------------------------------------------------------
@@ -49,6 +52,7 @@ class Memcache{
    * @return 	boolean 	true on success, false on failure
    */
    public function save($id, $data, $ttl = 60){
+      $id = $this->getkey($id);
       if (get_class($this->_memcached) == 'Memcached')
       {
         return $this->_memcached->set($id, array($data, time(), $ttl), $ttl);
@@ -72,6 +76,7 @@ class Memcache{
    * @return 	boolean 	true on success, false on failure
    */
   public function delete($id){
+    $id = $this->getkey($id);
     return $this->_memcached->delete($id);
   }
 
@@ -107,8 +112,8 @@ class Memcache{
    * @return 	mixed		FALSE on failure, array on success.
    */
   public function get_metadata($id){
+     $id = $this->getkey($id);
      $stored = $this->_memcached->get($id);
-
      if (count($stored) !== 3){
 	return FALSE;
      }
@@ -121,6 +126,5 @@ class Memcache{
 		'data'	=> $data
 		 );
   }
-
 
 }

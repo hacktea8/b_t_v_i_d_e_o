@@ -12,7 +12,7 @@ $res='excres.txt';
 
 getsubcatelist($subcate);
 $i=0;
-$num=14;
+$num=2;
 foreach($subcate as $_cate){
 $i++;
 //2,6,10,14,17,20,23,26 is ok

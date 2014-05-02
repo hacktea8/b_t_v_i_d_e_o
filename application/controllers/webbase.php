@@ -2,7 +2,7 @@
 
 class Webbase extends CI_Controller {
   public $expirettl=array('5m'=>300,'15m'=>900,'30m'=>1800,'1h'=>3600,'3h'=>10800,'6h'=>21600,'9h'=>32400,'12h'=>43200,'1d'=>86400,'3d'=>253200,'5d'=>432000,'7d'=>604800);
-  public $showimgapi = 'http://img.hacktea8.com/showpic.php?key=';
+  public $showimgapi = 'http://img.hacktea8.com/showfile.php?key=';
   protected $mem = '';
   protected $redis = '';
   public $viewData = array();
@@ -37,7 +37,7 @@ class Webbase extends CI_Controller {
       $this->userInfo = $session_uinfo;
     }
     //var_dump($this->userInfo);exit;
-    $this->_c = $this->uri->segment(1,'index');
+    $this->_c = $this->uri->segment(1,'maindex');
     $this->_a = $this->uri->segment(2,'index');
     $c = isset($_GET['c'])?$_GET['c']:'';
     if($c){

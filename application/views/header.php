@@ -2,12 +2,12 @@
 <html lang="zh-CN" xml:lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:wb="http://open.weibo.com/wb">
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-<meta content="<?php echo $seo_keywords,',',$web_title;?>,BT种子下载,电驴资源,eD2k,磁力链接,龙BT发布,BT之家" name="keywords">
+<meta content="<?php echo $seo_keywords,',',$web_title;?>,龙BT发布,BT之家" name="keywords">
 <meta content="<?php echo $seo_title,'-',$web_title,$seo_description;?>" name="description">
 <?php if(isset($cid)){?>
 <link href="/api/feed/<?php echo $cid;?>" title="<?php echo $seo_title;?> - <?php echo $web_title;?>" type="application/rss+xml" rel="alternate">
 <?php }?>
-<title><?php echo $seo_title;?> - <?php echo $web_title;if(in_array($_a,array('index','lists'))){ echo '_BT种子下载|电驴资源|eD2k|磁力链接|龙BT发布|BT之家';}?></title>
+<title><?php echo $seo_title;?> - <?php echo $web_title,'种子资源分享';if(in_array($_a,array('index','lists'))){ echo '_BT种子下载|龙BT发布|BT之家|BTV.hackTea8.Com';}?></title>
 <link title="电驴资源" href="/api/opensearch" type="application/opensearchdescription+xml" rel="search">
 
 <link rel="stylesheet" href="<?php echo $css_url;?>global.css?v=<?php echo $version;?>" type="text/css">
@@ -46,9 +46,11 @@
 <ul class="header_link clearfix">
   <li class="link_item"><a href="/"
 onclick="" class="hover_red"><strong>首页</strong></a></li>
+<?php if(0){?>
   <li class="link_item">
 <a target="_blank" href="http://goo.gl/UEybJt"><img border="0" style="margin-top:5px;" src="http://pub.idqqimg.com/wpa/images/group.png" alt="电驴BT资源分享" title="电驴BT资源分享"></a>
   </li>
+<?php }?>
   <li class="link_item">
 <a version="1.0" class="qzOpenerDiv" href="http://goo.gl/LwcZXa" target="_blank" alt="赞一个" title="赞一个">赞一个</a>
   </li>

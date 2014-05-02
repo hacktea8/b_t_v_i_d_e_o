@@ -8,12 +8,17 @@ class Rediscache{
     'timeout'  => 10800
   );
   public $redis=null;
+  public $pre='btv';
   public function __construct() {
     $this->redis=new Redis();
     $this->redis->pconnect($this->_config['host'],$this->_config['port'],$this->_config['timeout']);
   }
+  public function getkey($key){
+    return substr($key,0,strlen($this->pre)) == $this->pre?$key:$this->pre.$key;
+  }
   public function set($key, $data, $ttl = 3600){
     try{
+      $key = $this->getkey($key);
       $this->redis->setex($key, $ttl, $data);
     }catch(Exception $e){
       return false;
@@ -23,12 +28,14 @@ class Rediscache{
     if(!$key){
        return false;
     }
+    $key = $this->getkey($key);
     return $this->redis->exists($key);
   }
   public function keys($key = ''){
     if( !$key){
        return false;
     }
+    $key = $this->getkey($key);
     return $this->redis->keys($key);
   }
   public function mset($data){
@@ -40,15 +47,21 @@ class Rediscache{
 
   public function get($key){
     try{
-      if(is_array($key))
+      if(is_array($key)){
+        foreach($key as &$v){
+          $v=$this->getkey($v);
+        }
         return $this->redis->getMultiple($key);
-      else
+      }else{
+        $key = $this->getkey($key);
         return $this->redis->get($key);
+      }
     }catch(Exception $e){
       return null;
     }
   }
   public function delete($key){
+    $key = $this->getkey($key);
     $this->redis->delete($key);
   }
 }

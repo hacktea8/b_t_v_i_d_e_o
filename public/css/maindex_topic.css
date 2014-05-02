@@ -1,3 +1,15 @@
+.app-dl a {
+    background: none repeat scroll 0 0 #00BB00;
+    color: #FFFFFF;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 35px;
+    line-height: 35px;
+    margin-right: 20px;
+    text-align: center;
+    width: 120px;
+}
 #content {
 width: 720px;
 float: left;

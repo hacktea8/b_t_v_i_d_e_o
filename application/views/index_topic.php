@@ -17,7 +17,7 @@
                                  <input value="" name="entryid" id="entryid" type="hidden">
                  <div class="topicImg">
      		            <a id="topicImgUrl" href="<?php echo $info['id'];?>" title="<?php echo $info['name'];?>">
-                <img alt="<?php echo $info['name'];?>" title="<?php echo $info['name'];?>" class="cover" src="<?php echo $showimgapi,$info['cover'];?>" >
+                <img alt="<?php echo $info['name'];?>" title="<?php echo $info['name'];?>" class="cover" src="<?php echo $showimgapi,$info['cover'];?>&w=136" >
               </a>
                 <div>
                     <div id="visitTimes" style="margin-top:5px; display:none">
@@ -139,9 +139,9 @@
         </div>
         <div class="blog_entry">
             <div class="iptcom" id="iptcomED2K">
-                 <div>
+                 <div class="app-dl">
 <?php
-echo $info['downurl'];
+echo '<a title="【',substr($info['ourl'],0,-5),'.zip】" href="',$showimgapi,$info['download'],'&filename=',substr($info['ourl'],0,-5),'" target="_blank" >','立刻下载至电脑</a>';
 if($verifycode){
   echo '<h1 style="color:red;text-align:center;">温馨提示:输入验证码即可显示下载地址!</h1><form id="verify_form">',$verifycode,'</form>';
 ?>
@@ -210,7 +210,7 @@ if($key%5==0){
 }
 ?>	   	            			<td>
 <a title="<?php echo $row['name'];?>" class="folder-entry-title" href="<?php echo $row['url'];?>" onClick="" target="_blank">
-<img class="lazy folder-entry-thumb" data-original="<?php echo $showimgapi,$row['cover'];?>" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>" alt="<?php echo $row['name'];?>" title="<?php echo $row['name'];?>" class="folder-entry-thumb" /></noscript></a>
+<img class="lazy folder-entry-thumb" data-original="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>&w=100" alt="<?php echo $row['name'];?>" title="<?php echo $row['name'];?>" class="folder-entry-thumb" /></noscript></a>
 <a title="<?php echo $row['name'];?>" class="folder-entry-title" href="<?php echo $row['url'];?>" onClick="" target="_blank"><?php echo $row['name'];?></a>
 </td>
 <?php
@@ -240,7 +240,7 @@ if($key%5==0){
    <a id="commentFolder"></a>
 <div class="clearBoth"></div><br>
  <div id="navside">
-		                            
+<?php if(0){?>	                            
  <div id="userres">
    <h3>该用户的其它精华资源</h3> <img title="<?php echo $info['name'];?>" alt="="<?php echo $info['name'];?>"" id="closeUser" class="closebtn" alt="" src="<?php echo $img_url;?>toggle.gif?v=<?php echo $version;?>">
 	            <div id="userMore">
@@ -275,6 +275,7 @@ if($key%5==0){
 <?php } ?>
 </div>
 </div>
+<?php }?>
 <div id="relativeres">
   <h3>相关资源</h3> <img alt="<?php echo $info['name'];?>" title="<?php echo $info['name'];?>" id="closeRel" class="closebtn" alt="" src="<?php echo $img_url;?>toggle.gif?v=<?php echo $version;?>">
   <div id="relMore">
@@ -283,7 +284,7 @@ foreach($info['relatdata'] as $row){
 ?>
   <p class="itshot">
    <a class="relatelink" href="<?php echo $row['id'];?>" onClick="" target="_blank">
-           <img class="lazy hot_img"  data-original="<?php echo $showimgapi,$row['cover'];?>" style="width: 100px; height: 100px" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" class="hot_img" /></noscript></a>
+           <img class="lazy hot_img"  data-original="<?php echo $showimgapi,$row['cover'];?>&w=100" style="width: 100px; height: 100px" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" class="hot_img" /></noscript></a>
 			 <a title="{$row['name']}" class="topic-title" href="<?php echo $row['url'];?>" onClick="" target="_blank"><?php echo $row['name'];?></a>
 </p>
 <?php
@@ -295,7 +296,7 @@ foreach($info['relatdata'] as $row){
 foreach($hotTopic as $row){
 ?>
 <dd class="itshot">
-<a id="entry_link_<?php echo $row['id'];?>" title="<?php echo $row['name'];?>" href="<?php echo $row['url'];?>" onClick="" target="_blank" style="text-decoration:none;"><img class="lazy hot_img"  data-original="<?php echo $showimgapi,$row['cover'];?>" style="width: 100px; height: 100px;display:inline;" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>" alt="<?php echo $row['name'];?>" title="<?php echo $row['name'];?>" class="hot_img" /></noscript>
+<a id="entry_link_<?php echo $row['id'];?>" title="<?php echo $row['name'];?>" href="<?php echo $row['url'];?>" onClick="" target="_blank" style="text-decoration:none;"><img class="lazy hot_img"  data-original="<?php echo $showimgapi,$row['cover'];?>&w=100" style="width: 100px; height: 100px;display:inline;" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>&w=100" alt="<?php echo $row['name'];?>" title="<?php echo $row['name'];?>" class="hot_img" /></noscript>
   <div id="entry_<?php echo $row['id'];?>" style="display:none;" class="entry_score_small"></div>
 </a>
   <br>

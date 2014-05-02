@@ -1,6 +1,6 @@
 </div>
 <div id="advertisement_bottom" class="mainDiv">
-<?php if(in_array($_c,array('index','lists','topic'))){?>
+<?php if(in_array($_c,array('lists'))){?>
 <script type="text/javascript">BAIDU_CLB_fillSlot("902635");</script>
 <?php }?>
 <div class="line_space"></div>
@@ -39,7 +39,9 @@ img.src='/public/images/show404.jpg';
 //img.onerror=null; 控制不要一直跳动
 }
 <?php } ?>
-function _loadIndex(){$.get("/index/index");}
+function _loadIndex(){$.get("/maindex/index");
+$.get("/maindex/crontab");
+}
 $(document).ready(function(){
 <?php if('index' == $_a){ ?>
 window.setTimeout("_loadIndex()",5000);
@@ -59,7 +61,7 @@ function _Userlogin(){
      clearTimeout(timer);
      if($('.iconList').is(":visible") || $('.dropMenu').is(":visible")){
        return false;}
-     $.get('/index/isUserInfo/',function(data){
+     $.get('/maindex/isUserInfo/',function(data){
        if(data.status==1){
          $('.iconList').show();$('.dropMenu').hide();
        }else{

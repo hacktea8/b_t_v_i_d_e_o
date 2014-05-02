@@ -1,6 +1,6 @@
 <div id="wrap">
 <div id="nav">
-
+<?php if(0){?>
 <div class="box_7 rightBox">
 <div class="rightTitle title_bg">
 <div class="h3"><span>图书分类</span></div>
@@ -17,6 +17,7 @@ foreach($subcatelist as $row){
 </dl>
 </div>
 </div>
+<?php }?>
 <div style="height:10px;background:#fff;"></div>
 
 <div class="box_7 rightBox">
@@ -26,9 +27,9 @@ foreach($subcatelist as $row){
 </div>
 <div class="main" style="padding:10px;">
 <dl id="someLinks">
-<dd><a href="#" title="订阅本站资源">订阅本站资源</a></dd>
-<dd><a href="#" id="emuleOld" title="Download eMule">电驴(eMule)经典版下载</a></dd>
-<dd><a href="#" title="get firefox" id="getfirefox" target="_blank">推荐使用 Firefox 浏览器</a></dd>
+<dd><a href="#" onclick="return false;" title="订阅本站资源">订阅本站资源</a></dd>
+<dd><a href="#" onclick="return false;" id="emuleOld" title="Download eMule">电驴(eMule)经典版下载</a></dd>
+<dd><a href="#" onclick="return false;" title="get firefox" id="getfirefox" target="_blank">推荐使用 Firefox 浏览器</a></dd>
 <dd style=" clear:both;"></dd>
 </dl>
 </div>
@@ -51,7 +52,7 @@ foreach($subcatelist as $row){
 foreach($hotTopic as $row){
 ?>
 <dd class="leftMiddle">
-   <a href="<?php echo $row['url'];?>" onClick="" style="text-decoration:none;" id="entry_link_<?php echo $row['id'];?>"><img class="lazy hot_img" data-original="<?php echo $showimgapi,$row['cover'];?>" title="<?php echo $row['name'];?>" style="width: 100px; height: 100px" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" class="hot_img" /></noscript></a><br>
+   <a href="<?php echo $row['url'];?>" onClick="" style="text-decoration:none;" id="entry_link_<?php echo $row['id'];?>"><img class="lazy hot_img" data-original="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" style="width: 100px; height: 100px" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" class="hot_img" /></noscript></a><br>
 <a href="<?php echo $row['url'];?>" onClick=""><?php echo $row['name'];?></a>
             </dd>
 <?php
@@ -100,7 +101,7 @@ foreach($hotTopic as $row){
 foreach($infolist as $row){
 ?>
         <li>
-          <a href="<?php echo $row['url'];?>" onClick=""><img class="lazy file_img" data-original="<?php echo $showimgapi,$row['cover'];?>" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" class="file_img" /></noscript></a>
+          <a href="<?php echo $row['url'];?>" onClick=""><img class="lazy file_img" data-original="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" class="file_img" /></noscript></a>
  <h3>
 <span class="left_topics_class_sort"><a href="<?php echo $row['curl'];?>"><?php echo $row['cname'];?></a></span> <a href="<?php echo $row['url'];?>" onClick=""><?php echo $row['name'];?></a>
  </h3>

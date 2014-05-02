@@ -39,7 +39,7 @@ if(0 == $cover){
   continue;
 }
 $info = getvideobyid($val['id']);
-$filename = str_replace('.html','.torrent',$val['ourl']);
+$filename = str_replace('.html','.zip',$val['ourl']);
 $file_data['filename'] = $filename;
 $file_data['imgurl'] = $_root.$info['downurl'];
 //var_dump($file_data);exit;
@@ -50,6 +50,7 @@ if(strlen($downurl)<10){
 sleep(600);exit;
 }
 //echo $downurl,"\n";
+
 preg_match_all('#<img .*src="([^"]+)"#Uis',$info['intro'],$match);
 foreach($match[1] as $img){
   $img_url = $img;
@@ -67,6 +68,7 @@ $info['intro'] = str_replace($img,$img_str,$info['intro']);
 }
 $info['intro'] = droptags($info['intro']);
 $set_data = array('download'=>$downurl,'intro'=>$info['intro']);
+
 //var_dump($set_data);exit;
 setcontentdata($set_data,$val['id']);
 //
@@ -139,6 +141,7 @@ function droptags($html){
 global $_root;
 $str_replace = array(
 array('from'=>'</a>','to'=>'')
+array('from'=>'<img </td>','to'=>'<img ')
 ,array('from'=>substr($_root,0,-1),'to'=>'http://btv.hacktea8.com/')
 );
 $preg_replace = array(
