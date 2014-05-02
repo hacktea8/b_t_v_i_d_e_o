@@ -133,7 +133,7 @@ sleep(2);
 }
 function getinfolist(&$cateurl){
   global $model,$psize,$pageno,$action,$_root,$cid;
-  for($i=1;;$i++){
+  for($i=1;$i<4;$i++){
 //通过 atotal计算i的值
     $ps = $i == 1?'':'/page/'.$i;
     $html=getHtml($cateurl.$ps);
