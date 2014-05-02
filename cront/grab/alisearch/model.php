@@ -6,13 +6,27 @@ class Model{
   public function __construct(){
      $this->db = new DB_MYSQL(); 
   }
+  public function getCate(){
+    $sql = sprintf('SELECT * FROM %s',$this->db->getTable('emule_cate'));
+    $list = $this->db->result_array($sql);
+    $return = array();
+    foreach($list as &$v){
+      $return[$v['id']] = $v;
+    }
+    return $return;
+  }
   public function getNoneSearchLimit($limit = 30){
      $sql = sprintf('SELECT * FROM %s WHERE nonesearch = 0 LIMIT %d',$this->db->getTable('emule_article'), $limit);
      $list = $this->db->result_array($sql);
+     if(empty($list)){
+       return array();
+     }
      foreach($list as $k => $val){
-       $sql = sprintf('SELECT intro FROM %s WHERE id = %d LIMIT 1',$this->db->getTable('emule_article_content'),$val['id']);
+       $table = sprintf('emule_article_content%d',$val['id']%10);
+       $sql = sprintf('SELECT keyword,intro FROM %s WHERE id = %d LIMIT 1',$this->db->getTable($table),$val['id']);
        $row = $this->db->row_array($sql);
        $list[$k]['intro'] = $row['intro'];
+       $list[$k]['keyword'] = $row['keyword'];
      }
      return $list;
   }

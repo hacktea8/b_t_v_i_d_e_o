@@ -141,7 +141,7 @@ function droptags($html){
 global $_root;
 $str_replace = array(
 array('from'=>'</a>','to'=>'')
-array('from'=>'<img </td>','to'=>'<img ')
+,array('from'=>'<img </td>','to'=>'<img ')
 ,array('from'=>substr($_root,0,-1),'to'=>'http://btv.hacktea8.com/')
 );
 $preg_replace = array(

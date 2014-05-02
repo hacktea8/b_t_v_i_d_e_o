@@ -1,5 +1,8 @@
 <?php
 
+$itemArr = array();
+
+/*
 $itemArr = array(
 'id' => '',      
 //	STRING	文档标识	是			是
@@ -63,4 +66,4 @@ $itemArr = array(
 //	TAG	软件标签		是		
 'display_text' => ''
 );
-
+*/

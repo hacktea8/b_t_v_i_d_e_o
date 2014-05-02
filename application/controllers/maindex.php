@@ -173,27 +173,28 @@ class Maindex extends Usrbase {
   public function tpl(){
     $this->load->view('index_tpl',$this->viewData);
   }
-  public function search($q='',$type = 0,$order = 0,$page = 1){
+  public function search($q='',$order = 0,$page = 1){
     $q = $q ? $q:$this->input->get('q');
     $q = urldecode($q);
     $page = intval($page);
     $page = $page < 1 ? 1: $page;
     $list = array();
     if($q){
-      $param = array('kw' => $q, 'page' => $page, 'page_size' => 20);
-      if(1 == $type){
-        $param[] = '';
-      }elseif(2 == $type){
-        $param[] = '';
-      }
-      $this->load->library('aliyunsearchapi');
-      $this->aliyunsearchapi->getsearch($list, $type, $param);
-      $hotKeywords = $this->aliyunsearchapi->topQuery($params = array('num'=>8,'days'=>30));
+      $this->load->library('yunsearchapi');
+      $opt = array('query'=>$q,'start'=>$page,'hits'=>25);
+      $this->yunsearchapi->search($list,$opt);
+      $hotKeywords = $this->yunsearchapi->getTopQuery($num=8,$days=30);
       //var_dump($hotKeywords);exit;
       if('OK' == $hotKeywords['status']){
          $hotKeywords = $hotKeywords['result']['items']['emu_hacktea8'];
       }
     }
+/*
+echo '<pre>';
+var_dump($q);
+var_dump($hotKeywords);
+var_dump($list);exit;
+/**/
     $hot_search = array();
     $recommen_topic = array();
     $recommen_topic[1] = array();
@@ -202,7 +203,7 @@ class Maindex extends Usrbase {
     $hot_topic['hit'] = array();
     $hot_topic['focus'] = array();
     $this->load->library('pagination');
-    $config['base_url'] = sprintf('/index/search/%s/%d/%d/',urlencode($q),$type,$order);
+    $config['base_url'] = sprintf('/maindex/search/%s/%d/',urlencode($q),$order);
     $config['total_rows'] = $list['result']['viewtotal'];
     $config['per_page'] = 25;
     $config['first_link'] = '第一页';
@@ -211,7 +212,7 @@ class Maindex extends Usrbase {
     $config['last_link'] = '最后一页';
     $config['cur_tag_open'] = '<span class="current">';
     $config['cur_tag_close'] = '</span>';
-    $config['suffix'] = '.html';
+    $config['suffix'] = '.shtml';
     $config['use_page_numbers'] = TRUE;
     $config['num_links'] = 5;
     $config['cur_page'] = $page;

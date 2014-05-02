@@ -27,7 +27,7 @@
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-43439571-1', 'hacktea8.com');
+  ga('create', 'UA-43439571-2', 'hacktea8.com');
   ga('send', 'pageview');
 
 </script>
@@ -97,8 +97,8 @@ onclick="" class="hover_red"><strong>首页</strong></a></li>
 </div>
 <div id="banner_div">
 <div class="mainDiv block">
-<div id="logo_div"><a href="/" title="<?php echo $web_title;?> - 分享互联网"
-	target="_top" id="index_logo"><img alt="<?php echo $web_title;?> - 分享互联网"
+<div id="logo_div"><a href="/" title="<?php echo $web_title;?> - BT影视种子"
+	target="_top" id="index_logo"><img alt="<?php echo $web_title;?> - BT影视种子"
 	src="<?php echo $img_url;?>emulogo.jpg?v=<?php echo $version;?>"
 	class="png_image"></a></div>
 <div id="new_search_bar_div">
@@ -118,7 +118,7 @@ onclick="" class="hover_red"><strong>首页</strong></a></li>
 <?php } ?>
 </div>
 <div id="top-search">
-<form action="/index/search/" onsubmit=""
+<form action="/maindex/search/" onsubmit=""
 	class="block"><span id="search-module-toggle"> <img
 	onload="this.onload=''; if(this.style.filter) { this.src='<?php echo $img_url;?>search0.gif'; this.width=18; this.height=18; }"
 	style=""
