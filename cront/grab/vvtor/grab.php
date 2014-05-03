@@ -30,7 +30,7 @@ $cover = substr($cover,3);
 echo $cover,"\n";
 //exit;
 //echo strlen($cover);exit;
-if(44 == $cover){
+if( in_array($cover,array('44','404'))){
   die('Token 失效!');
 }
 if(0 == $cover){
@@ -39,8 +39,11 @@ if(0 == $cover){
   continue;
 }
 $info = getvideobyid($val['id']);
-$filename = str_replace('.html','.zip',$val['ourl']);
-$file_data['filename'] = $filename;
+$header = get_headers($_root.$info['downurl'],1);
+$filename = substr($header['Content-Disposition'],strlen("attachment; filename*=UTF-8''"));
+//var_dump($header);exit;
+//$filename = str_replace('.html','.zip',$val['ourl']);
+$file_data['filename'] = trim($filename);
 $file_data['imgurl'] = $_root.$info['downurl'];
 //var_dump($file_data);exit;
 $downurl = getHtml($file_data);
@@ -53,6 +56,9 @@ sleep(600);exit;
 
 preg_match_all('#<img .*src="([^"]+)"#Uis',$info['intro'],$match);
 foreach($match[1] as $img){
+ if('IMG_API_URL=' == substr($img,0,12)){
+   continue;
+ }
   $img_url = $img;
  if('http://' != substr($img,0,7)){
   $img_url = $_root.$img;
@@ -74,12 +80,12 @@ setcontentdata($set_data,$val['id']);
 //
 setcoverByid($cover,$val['id']);
 //echo $val['id'],"\n",exit;
-sleep(5);
+sleep(15);
 }
 //var_dump($list);exit;
 $task --;
 //2min
-sleep(8);
+sleep(18);
 }
 file_put_contents('imgres.txt',$val['id']);
 

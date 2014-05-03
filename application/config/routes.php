@@ -39,7 +39,7 @@
 */
 
 $route['default_controller'] = "maindex";
-$route['404_override'] = 'index/show404';
+$route['404_override'] = 'maindex/show404';
 
 
 /* End of file routes.php */
