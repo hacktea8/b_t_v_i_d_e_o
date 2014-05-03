@@ -14,13 +14,13 @@ class Usrbase extends Webbase {
     $this->load->model('emulemodel');
     $hotTopic = $this->mem->get('hotTopic');
 //var_dump($hotTopic);exit;
-    if( !empty($hotTopic)){
+    if( empty($hotTopic)){
       $hotTopic = $this->emulemodel->getHotTopic();
       $this->_rewrite_article_url($hotTopic);
       $this->mem->set('hotTopic',$hotTopic,$this->expirettl['12h']);
     }
     $rootCate = $this->mem->get('rootCate');
-    if( !empty($rootCate)){
+    if( empty($rootCate)){
       $rootCate = $this->emulemodel->getCateByCid(0);
       $this->_rewrite_list_url($rootCate);
       $this->mem->set('rootCate',$rootCate,$this->expirettl['1d']);

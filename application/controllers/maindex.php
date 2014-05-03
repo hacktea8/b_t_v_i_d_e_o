@@ -139,6 +139,8 @@ class Maindex extends Usrbase {
     $data['info']['fav'] = 0;
     $cid = $data['info']['cid'] ? $data['info']['cid'] : 0;
     $cpid = isset($data['postion'][0]['id'])?$data['postion'][0]['id']:0;
+    $data['info']['relatdata'] = $this->emulemodel->getArticleListByCid($data['info']['cid'],1,2,16);
+    $data['info']['relatdata'] = $data['info']['relatdata']["emulelist"];
 // seo setting
     $kw = '';
     foreach($data['postion'] as $row){
@@ -162,6 +164,7 @@ class Maindex extends Usrbase {
     }
     $isCollect = $this->emulemodel->getUserIscollect($this->userInfo['uid'],$data['info']['id']);
     $this->assign(array('isCollect'=>$isCollect,'verifycode'=>$verifycode,'seo_title'=>$title,'seo_keywords'=>$keywords,'cid'=>$cid,'cpid'=>$cpid,'info'=>$data['info'],'postion'=>$data['postion'],'aid'=>$aid)); 
+//echo '<pre>';var_dump($data['info']);exit;
     $ip = $this->input->ip_address();
     $key = sprintf('hitslog:%s:%d',$ip,$aid);
 //var_dump($this->redis->exists($key));exit;

@@ -132,8 +132,8 @@
                 <div class="tab-nav group-mods" id="theCon">
 			<ul>
 				<li class="current"><a href="#theCon">详细内容</a></li>
-				<li><a href="#theRel">相关资源</a></li>
-				<li><a href="#theRes">补充资源</a></li>
+				<li><a href="#theRel">猜你喜欢</a></li>
+				<li><a href="#theRes">相关资源</a></li>
 				<li><a href="#theCom">用户评论</a></li>
 			</ul>
         </div>
@@ -190,8 +190,8 @@ VIP通道:<?php echo $info['vipdwurl'];?>
   <div class="tab-nav group-mods">
 	<ul>
 	<li><a href="#theCon">详细内容</a></li>
-	<li class="current" ><a id="theRel" href="#theRel" index='1' onclick="show_hide_tab('theRel','tab_con_tab')">相关资源</a></li>
-	<li><a id="theRes" href="#theRes" index='2' onclick="show_hide_tab('theRes','tab_con_tab')">补充资源</a></li>
+	<li class="current" ><a id="theRel" href="#theRel" index='1' onclick="show_hide_tab('theRel','tab_con_tab')">猜你喜欢</a></li>
+	<li><a id="theRes" href="#theRes" index='2' onclick="show_hide_tab('theRes','tab_con_tab')">相关资源</a></li>
 	<li><a id="theCom" href="#theCom" index='3' onclick="show_hide_tab('theCom','tab_con_tab')">用户评论</a></li>
  </ul>
    </div>
@@ -202,31 +202,28 @@ VIP通道:<?php echo $info['vipdwurl'];?>
 <script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js?uid=1762590"></script>
 <a href="" style="border:0;"><img src="http://img.ujian.cc/pixel.png" alt="友荐云推荐" style="border:0;padding:0;margin:0;" /></a>
 <!-- UJian Button END -->
+</div>
+<div class="tab_con_tab" id="con_theRes">
+
     	<table class="restable topic_class_restable">
 	<tbody>
 <?php foreach($info['relatdata'] as $key=>$row){
-if($key%5==0){
+if($key%4==0){
    echo '<tr>';
 }
 ?>	   	            			<td>
 <a title="<?php echo $row['name'];?>" class="folder-entry-title" href="<?php echo $row['url'];?>" onClick="" target="_blank">
 <img class="lazy folder-entry-thumb" data-original="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>&w=100" alt="<?php echo $row['name'];?>" title="<?php echo $row['name'];?>" class="folder-entry-thumb" /></noscript></a>
-<a title="<?php echo $row['name'];?>" class="folder-entry-title" href="<?php echo $row['url'];?>" onClick="" target="_blank"><?php echo $row['name'];?></a>
+<a style="display:block;" title="<?php echo $row['name'];?>" class="folder-entry-title" href="<?php echo $row['url'];?>" onClick="" target="_blank"><?php echo $row['name'];?></a>
 </td>
 <?php
-  if($key%5==0){
+  if($key%4==3 || $key == (count($info['relatdata'])-1)){
      echo '</tr>';
   }
 }
 ?>
     </tbody>
     </table>
-</div>
-<div class="tab_con_tab" id="con_theRes">
-            <h3>这里是其它用户补充的资源(<a href="#commentFolder" id="extred2k">我也要补充</a>):</h3>
-                			<div class="emuletop-no">
-    				暂无补充资源
-    			</div>
 </div>									
 <div id="con_theCom" class="tab_con_tab">
 <!-- Comment BEGIN -->	
@@ -275,7 +272,6 @@ if($key%5==0){
 <?php } ?>
 </div>
 </div>
-<?php }?>
 <div id="relativeres">
   <h3>相关资源</h3> <img alt="<?php echo $info['name'];?>" title="<?php echo $info['name'];?>" id="closeRel" class="closebtn" alt="" src="<?php echo $img_url;?>toggle.gif?v=<?php echo $version;?>">
   <div id="relMore">
@@ -283,12 +279,14 @@ if($key%5==0){
 foreach($info['relatdata'] as $row){
 ?>
   <p class="itshot">
-   <a class="relatelink" href="<?php echo $row['id'];?>" onClick="" target="_blank">
+   <a class="relatelink" href="<?php echo $row['url'];?>" onClick="" target="_blank">
            <img class="lazy hot_img"  data-original="<?php echo $showimgapi,$row['cover'];?>&w=100" style="width: 100px; height: 100px" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" class="hot_img" /></noscript></a>
-			 <a title="{$row['name']}" class="topic-title" href="<?php echo $row['url'];?>" onClick="" target="_blank"><?php echo $row['name'];?></a>
+			 <a title="<?php echo $row['name'];?>" class="topic-title" href="<?php echo $row['url'];?>" onClick="" target="_blank"><?php echo $row['name'];?></a>
 </p>
 <?php
 } ?>
+
+<?php }?>
  <dl id="hotres">
   <dt>今日热门</dt>
     				                                               
