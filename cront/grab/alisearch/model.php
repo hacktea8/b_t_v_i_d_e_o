@@ -16,7 +16,7 @@ class Model{
     return $return;
   }
   public function getNoneSearchLimit($limit = 30){
-     $sql = sprintf('SELECT * FROM %s WHERE nonesearch = 0 LIMIT %d',$this->db->getTable('emule_article'), $limit);
+     $sql = sprintf('SELECT * FROM %s WHERE `onlinedate`<=%d AND `flag`=1 AND nonesearch = 0 LIMIT %d',$this->db->getTable('emule_article'),date('Ymd'), $limit);
      $list = $this->db->result_array($sql);
      if(empty($list)){
        return array();

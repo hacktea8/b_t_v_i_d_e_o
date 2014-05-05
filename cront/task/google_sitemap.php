@@ -14,7 +14,7 @@ class model{
   }
   public function getList($page = 1,$limit = 100,$aid = 0){
     $start = ($page - 1) * $limit;
-    $sql = sprintf('SELECT `id`,`utime` FROM `pw_emule_article` WHERE `flag`=1 AND `id`>%d  LIMIT %d,%d',$aid,$start,$limit);
+    $sql = sprintf('SELECT `id`,`utime` FROM '.$this->db->getTable('emule_article').' WHERE `flag`=1 AND `onlinedate`<=%d AND `id`>%d  LIMIT %d,%d',date('Ymd'),$aid,$start,$limit);
      return $this->db->result_array($sql);
   }
   public function addIndex($data = array()){
@@ -23,16 +23,16 @@ class model{
     return $this->db->insert_id();
   }
   public function getIndexList($type){
-    $sql = sprintf('SELECT   `index` FROM `pw_emule_sitemap` WHERE `type`=%d ORDER BY `id` DESC',$type);
+    $sql = sprintf('SELECT   `index` FROM '.$this->db->getTable('emule_sitemap').' WHERE `type`=%d ORDER BY `id` DESC',$type);
     return $this->db->result_array($sql);
   }
   public function getMaxIndex($type){
-    $sql = sprintf('SELECT   `index` FROM `pw_emule_sitemap` WHERE `type`=%d ORDER BY `id` DESC  LIMIT 1',$type);
+    $sql = sprintf('SELECT   `index` FROM '.$this->db->getTable('emule_sitemap').' WHERE `type`=%d ORDER BY `id` DESC  LIMIT 1',$type);
     $row = $this->db->row_array($sql);
     return isset($row['index'])?$row['index']:0;
   }
   public function getMaxAid($type,$limit){
-    $sql = sprintf('SELECT   `aid` FROM `pw_emule_sitemap` WHERE `type`=%d ORDER BY `id` DESC  LIMIT 2',$type);
+    $sql = sprintf('SELECT   `aid` FROM '.$this->db->getTable('emule_sitemap').' WHERE `type`=%d ORDER BY `id` DESC  LIMIT 2',$type);
     $list = $this->db->result_array($sql);
     if(count($list) < 2){
        
@@ -44,14 +44,14 @@ class model{
     return ($row1['aid'] - $row2['aid']) < $limit?$row2['aid']:$row1['aid'];
   }
   public function getListNum($aid){
-    $sql = sprintf('SELECT count(*) as total FROM `pw_emule_article` WHERE `id`>%d ',$aid);
+    $sql = sprintf('SELECT count(*) as total FROM '.$this->db->getTable('emule_article').' WHERE `id`>%d ',$aid);
     $row = $this->db->row_array($sql);
     return isset($row['total'])?$row['total']:0;
   }
 }
 
 $type = 1;
-$base_url = 'http://emu.hacktea8.com/';
+$base_url = 'http://btv.hacktea8.com/';
 $count = 1;
 $countLimit = 30000;
 $model = new model();
@@ -73,7 +73,7 @@ for($p = 1;;$p++){
       $tmp = $sitemap.$tmp.'</urlset>';
       $index_file = BASEPATH.'google_sitemap'.$index.'.xml';
       file_put_contents($index_file,$tmp);
-      if($new_index || $index >1){
+      if($new_index || $index >=0){
         $model->addIndex(array('type'=>$type,'index'=>$index,'aid'=>$val['id'],'update'=>$val['utime']));
         $new_index = 0;
       }

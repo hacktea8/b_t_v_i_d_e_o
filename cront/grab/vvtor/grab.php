@@ -4,7 +4,7 @@ $APPPATH=dirname(__FILE__).'/';
 include_once($APPPATH.'../db.class.php');
 include_once($APPPATH.'config.php');
 
-$pattern = '/ed2kers/grab.php';
+$pattern = '/vvtor/grab.php';
 require_once $APPPATH.'singleProcess.php';
 
 $db=new DB_MYSQL();

@@ -77,10 +77,10 @@ class Maindex extends Usrbase {
     $page = $page > 0 ? $page: 1;
     if($page < 11){
        $data = array();
-       $data['emulelist'] = $this->mem->get('emu-emulelist'.$cid.'-'.$page.$order);
-       $data['atotal'] = $this->mem->get('emu-listatotal'.$cid);
-       $data['subcatelist'] = $this->mem->get('emu-listsubcatelist'.$cid);
-       $data['postion'] = $this->mem->get('emu-listpostion'.$cid);
+       $data['emulelist'] = $this->mem->get('emulelist'.$cid.'-'.$page.$order);
+       $data['atotal'] = $this->mem->get('listatotal'.$cid);
+       $data['subcatelist'] = $this->mem->get('listsubcatelist'.$cid);
+       $data['postion'] = $this->mem->get('listpostion'.$cid);
        if( empty($data['emulelist'])){
 //die($this->expirettl['12h'].'empty');
          $data = $this->emulemodel->getArticleListByCid($cid,$order,$page);
@@ -88,10 +88,10 @@ class Maindex extends Usrbase {
          $this->_rewrite_list_url($data['subcatelist']);
          $this->_rewrite_article_url($data['emulelist']);
 //echo '<pre>';var_dump($data);exit;
-         $this->mem->set('emu-emulelist'.$cid.'-'.$page.$order,$data['emulelist'],$this->expirettl['7d']);
-         $this->mem->set('emu-listatotal'.$cid,$data['atotal'],$this->expirettl['7d']);
-         $this->mem->set('emu-listsubcatelist'.$cid,$data['subcatelist'],$this->expirettl['7d']);
-         $this->mem->set('emu-listpostion'.$cid,$data['postion'],$this->expirettl['7d']);
+         $this->mem->set('emulelist'.$cid.'-'.$page.$order,$data['emulelist'],$this->expirettl['1h']);
+         $this->mem->set('listatotal'.$cid,$data['atotal'],$this->expirettl['1h']);
+         $this->mem->set('listsubcatelist'.$cid,$data['subcatelist'],$this->expirettl['1h']);
+         $this->mem->set('emu-listpostion'.$cid,$data['postion'],$this->expirettl['1h']);
        }
     }else{
        $data = $this->emulemodel->getArticleListByCid($cid,$order,$page);
@@ -99,7 +99,7 @@ class Maindex extends Usrbase {
     $data['emulelist'] = is_array($data['emulelist']) ? $data['emulelist']: array();
     $cpid = isset($data['postion'][0]['id'])?$data['postion'][0]['id']:0;
     $this->load->library('pagination');
-    $config['base_url'] = sprintf('/index/lists/%d/%d/',$cid,$order);
+    $config['base_url'] = sprintf('/maindex/lists/%d/%d/',$cid,$order);
     $config['total_rows'] = $data['atotal'];
     $config['per_page'] = 25; 
     $config['first_link'] = '第一页'; 
@@ -247,6 +247,7 @@ var_dump($list);exit;
     if(file_exists($lock) && time()-filemtime($lock)<6*3600){
        return false;
     }
+    $this->emulemodel->autoSetVideoOnline(3);
     $this->emulemodel->setCateVideoTotal();
     file_put_contents($lock,'');
     chmod($lock,0777);

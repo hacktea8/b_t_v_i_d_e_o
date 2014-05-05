@@ -7,11 +7,20 @@ class emuleModel extends baseModel{
   public function __construct(){
     parent::__construct();
   }
+  public function autoSetVideoOnline($limit = 5){
+    $cate = $this->getCateByCid(0);
+    foreach($cate as $v){
+      $k = $v['id'];
+      $sql = sprintf('UPDATE %s SET `onlinedate`=%d,`flag`=1,`utime`=%d,`ptime`=%d WHERE `onlinedate`=0 AND `cid`=%d AND `flag`=3 LIMIT %d',$this->db->dbprefix('emule_article'),date('Ymd'),time(),time(),$k,$limit);
+      $this->db->query($sql);
+    }
+    return 1;
+  }
   public function setCateVideoTotal(){
     $cate = $this->getCateByCid(0);
     foreach($cate as $v){
       $k = $v['id'];
-      $sql = sprintf('UPDATE %s SET`atotal`=(SELECT COUNT(*) FROM %s WHERE `cid`=%d) WHERE `id`=%d LIMIT 1',$this->db->dbprefix('emule_cate'),$this->db->dbprefix('emule_article'),$k,$k);
+      $sql = sprintf('UPDATE %s SET`atotal`=(SELECT COUNT(*) FROM %s WHERE `flag`=1 AND `onlinedate`<=%d AND `cid`=%d) WHERE `id`=%d LIMIT 1',$this->db->dbprefix('emule_cate'),$this->db->dbprefix('emule_article'),date('Ymd'),$k,$k);
       $this->db->query($sql);
     }
     return 1;

@@ -30,11 +30,15 @@ class DB_MYSQL{
   function getTable($table){
     return $this->db_pre.$table;
   }
+  function close(){
+    mysql_close($this->link_id);
+    return true;
+  }
   function connect($server="",$user="",$password="",$database="") {
     global $usepconnect;
     // connect to db server
 
-    $usepconnect = 1;
+    $usepconnect = 0;
     if ( 0 == $this->link_id ) {
       if ($password=="") {
         if ($usepconnect==1) {
@@ -59,7 +63,9 @@ class DB_MYSQL{
     }
   }
 
-
+  function __destruct(){
+    $this->close();
+  }
 
 
   function geterrdesc() {
