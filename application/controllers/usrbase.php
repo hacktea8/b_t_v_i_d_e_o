@@ -17,13 +17,13 @@ class Usrbase extends Webbase {
     if( empty($hotTopic)){
       $hotTopic = $this->emulemodel->getHotTopic();
       $this->_rewrite_article_url($hotTopic);
-      $this->mem->set('hotTopic',$hotTopic,$this->expirettl['12h']);
+      $this->mem->set('hotTopic',$hotTopic,$this->expirettl['1h']);
     }
     $rootCate = $this->mem->get('rootCate');
     if( empty($rootCate)){
       $rootCate = $this->emulemodel->getCateByCid(0);
       $this->_rewrite_list_url($rootCate);
-      $this->mem->set('rootCate',$rootCate,$this->expirettl['1d']);
+      $this->mem->set('rootCate',$rootCate,$this->expirettl['30m']);
     } 
     $this->assign(array(
     'seo_keywords'=>$this->seo_keywords,'seo_description'=>$this->seo_description,'seo_title'=>$this->seo_title

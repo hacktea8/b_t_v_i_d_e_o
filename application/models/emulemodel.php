@@ -148,7 +148,7 @@ class emuleModel extends baseModel{
        $cids = implode(',',$cids);
        $where = ' a.`cid` in ('.$cids.') AND ';
      }
-     $sql = sprintf('SELECT %s,c.`name` as cname,c.atotal FROM %s as a LEFT JOIN %s as c ON (a.cid=c.id) WHERE %s a.`flag`=1 AND c.flag=1 %s LIMIT %d,%d',$this->_dataStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix('emule_cate'),$where,$order,$page,$limit);
+     $sql = sprintf('SELECT %s,c.`name` as cname FROM %s as a LEFT JOIN %s as c ON (a.cid=c.id) WHERE %s a.`flag`=1 AND c.flag=1 %s LIMIT %d,%d',$this->_dataStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix('emule_cate'),$where,$order,$page,$limit);
 //echo $sql;exit;
      $data = array();
      $data['emulelist'] = $this->db->query($sql)->result_array();
@@ -159,7 +159,7 @@ class emuleModel extends baseModel{
      }
      $data['postion'] = $this->getsubparentCate($cid);
      $data['subcatelist'] = $this->getAllSubcateByCid($cid);
-     $data['atotal']   = $this->getCateAtotal($cid);
+     //$data['atotal']   = $this->getCateAtotal($cid);
      return $data;
   }
 
@@ -322,9 +322,13 @@ class emuleModel extends baseModel{
        }
        return $res;
      }
-
+     $return = array();
      $sql = sprintf('SELECT `id`, `pid`, `name`, `atotal` FROM %s WHERE `pid` = 0 AND `flag` = 1',$this->db->dbprefix('emule_cate'));
-     return $this->db->query($sql)->result_array();
+     $list = $this->db->query($sql)->result_array();
+     foreach($list as &$v){
+       $return[$v['id']] = $v;
+     }
+     return $return;
   }
 }
 ?>
