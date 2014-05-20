@@ -26,11 +26,11 @@ em{color:red;}
     </div><!-- /.top-info -->
     <div class="header">
         <div class="row">
-            <div class="logo fl"><a href="/" title="<?php echo $web_title;?>_软件下载,绿色软件,手机软件下载尽在绿色<?php echo $web_title;?>">
+            <div class="logo fl"><a href="/" title="<?php echo $web_title;?>">
 <?php echo $web_title;?>
 </a></div>
             <div class="search-form">
-                <form action="/index/search/" method="get" >
+                <form action="/maindex/search/" method="get" >
                     <input type="text" id="keyword" autocomplete="off" class="search-wrod" name="q" placeholder="请输入需要搜索的关键词" x-webkit-speech="" speech="" value="<?php echo $q;?>"/>
                     <button type="submit" id="search_submit" class="search-btn">立即搜索</button>
                 </form>

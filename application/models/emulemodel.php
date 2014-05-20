@@ -11,7 +11,7 @@ class emuleModel extends baseModel{
     $cate = $this->getCateByCid(0);
     foreach($cate as $v){
       $k = $v['id'];
-      $sql = sprintf('UPDATE %s SET `onlinedate`=%d,`flag`=1,`utime`=%d,`ptime`=%d WHERE `onlinedate`=0 AND `cid`=%d AND `flag`=3 LIMIT %d',$this->db->dbprefix('emule_article'),date('Ymd'),time(),time(),$k,$limit);
+      $sql = sprintf('UPDATE %s SET `onlinedate`=%d,`flag`=1,`utime`=%d,`ptime`=%d WHERE `onlinedate`=0 AND `cid`=%d LIMIT %d',$this->db->dbprefix('emule_article'),date('Ymd'),time(),time(),$k,$limit);
       $this->db->query($sql);
     }
     return 1;
@@ -199,9 +199,9 @@ class emuleModel extends baseModel{
      return $res = array(array('id'=>$parinfo[0]['id'],'name'=>$parinfo[0]['name']),array('id'=>$subinfo['id'],'name'=>$subinfo['name']));
   }
 
-  public function getEmuleTopicByAid($aid,$uid=0,$isadmin=false){
+  public function getEmuleTopicByAid($aid,$uid=0,$isadmin=false,$edite=1){
      $where = '';
-     if($uid && !$isadmin)
+     if($uid && !$isadmin && $edite)
        $where = sprintf(' AND `uid`=%d LIMIT 1',$uid);
 
      $table = sprintf("emule_article_content%d",$aid%10);

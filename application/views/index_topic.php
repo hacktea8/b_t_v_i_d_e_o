@@ -332,8 +332,8 @@ function show_hide_tab(show,hide){
 }
 $('#addFav').click(function(){
 var uid = <?php echo $uinfo['uid']?0:1;?>;
-if(uid){return false;}
-$.get("/index/addCollect/<?php echo $info['id'];?>", function(result){
+if(uid){alert('抱歉！您还未登录。请先登录!!');return false;}
+$.get("/maindex/addCollect/<?php echo $info['id'];?>", function(result){
   if(result.status==1){
     $('#addFavBtn').attr("src","<?php echo $img_url;?>delfavorite.gif");
   }else{

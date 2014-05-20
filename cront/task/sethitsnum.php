@@ -19,7 +19,7 @@ foreach($keys as $k){
 //var_dump($id);exit;
   $model->setTopicHitsLog($id);
   $redis->delete($k);
-  usleep(1000);
+//  usleep(1000);
 }
 
 echo "\n===$id=== Update Emule Topic Hit Log OK! ========\n";

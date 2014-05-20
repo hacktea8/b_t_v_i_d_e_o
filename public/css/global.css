@@ -16,6 +16,7 @@ font-family: "Lucida Grande",Tahoma,Verdana,Lucida,Arial,sans-serif;
 .header_link a.red:hover{
 color:#fff!important;
 }
+#addfavorite_div{background-color: yellow;}
 #nav_div {
     margin: 10px 0 10px 0;
     }

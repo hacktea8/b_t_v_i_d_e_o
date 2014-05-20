@@ -14,7 +14,7 @@ class Maindex extends Usrbase {
     }
     $view .= 'index.html';
     $lock = $view . '.lock';
-    if( !file_exists($view) || (time() - filemtime($view)) > 3*3600 ){
+    if( !file_exists($view) || (time() - filemtime($view)) > 1*3600 ){
       if(!file_exists($lock)){
         $emuleIndex = $this->emulemodel->getEmuleIndexData();
         $this->assign(array('_a'=>'index','emuleIndex'=>$emuleIndex));
@@ -131,7 +131,7 @@ class Maindex extends Usrbase {
   }
   public function topic($aid){
     $aid = intval($aid);
-    $data = $this->emulemodel->getEmuleTopicByAid($aid,$this->userInfo['uid'], $this->userInfo['isadmin']);
+    $data = $this->emulemodel->getEmuleTopicByAid($aid,$this->userInfo['uid'], $this->userInfo['isadmin'],0);
     $data['info']['ptime']=date('Y:m:d', $data['info']['ptime']);
     $data['info']['utime'] = date('Y/m/d', $data['info']['utime']);
     $this->_rewrite_list_url($data['postion']);
@@ -180,12 +180,14 @@ class Maindex extends Usrbase {
   public function search($q='',$order = 0,$page = 1){
     $q = $q ? $q:$this->input->get('q');
     $q = urldecode($q);
+    $q = htmlentities($q);
     $page = intval($page);
     $page = $page < 1 ? 1: $page;
     $list = array();
+    $pageSize = 25;
     if($q){
       $this->load->library('yunsearchapi');
-      $opt = array('query'=>$q,'start'=>$page,'hits'=>25);
+      $opt = array('query'=>$q,'start'=>$page,'hits'=>$pageSize);
       $this->yunsearchapi->search($list,$opt);
       $hotKeywords = $this->yunsearchapi->getTopQuery($num=8,$days=30);
       //var_dump($hotKeywords);exit;
@@ -209,7 +211,7 @@ var_dump($list);exit;
     $this->load->library('pagination');
     $config['base_url'] = sprintf('/maindex/search/%s/%d/',urlencode($q),$order);
     $config['total_rows'] = $list['result']['viewtotal'];
-    $config['per_page'] = 25;
+    $config['per_page'] = $pageSize;
     $config['first_link'] = '第一页';
     $config['next_link'] = '下一页';
     $config['prev_link'] = '上一页';

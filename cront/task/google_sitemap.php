@@ -18,6 +18,11 @@ class model{
      return $this->db->result_array($sql);
   }
   public function addIndex($data = array()){
+    $sql = sprintf("SELECT * FROM %s WHERE `type`=%d AND `index`=%d limit 1",$this->db->getTable('emule_sitemap'),$data['type'],$data['index']);
+    $row = $this->db->row_array($sql);
+    if($row){
+      return $row['id'];
+    }
     $sql = $this->db->insert_string($this->db->getTable('emule_sitemap'),$data);
     $this->db->query($sql); 
     return $this->db->insert_id();

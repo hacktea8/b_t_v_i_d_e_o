@@ -11,10 +11,11 @@ $db=new DB_MYSQL();
 
 $data = array('url' => 'http://img.hacktea8.com/fileapi/uploadurl?seq=', 'imgurl'=>'');
 $file_data = array('url' => 'http://img.hacktea8.com/fileapi/uploadurl?seq=', 'imgurl'=>'','filename'=>'');
-$task = 600;
+$task = 5;
 while($task){
 $list = getnocoverlist();
 if(empty($list)){
+echo "grab list empty!\n";
 sleep(600);
 break;
 }
@@ -118,7 +119,7 @@ function setcoverByid($cover = '',$id = 0){
        return false;
     }
     global $db;
-    $sql = sprintf('UPDATE %s SET `cover`=\'%s\' WHERE `id`=%d LIMIT 1',$db->getTable('emule_article'),mysql_real_escape_string($cover),$id);
+    $sql = sprintf('UPDATE %s SET `cover`=\'%s\',flag=1 WHERE `id`=%d LIMIT 1',$db->getTable('emule_article'),mysql_real_escape_string($cover),$id);
     $db->query($sql);
 }
 function getHtml(&$data){
