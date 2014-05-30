@@ -134,9 +134,11 @@ class emuleModel extends baseModel{
   public function getArticleListByCid($cid='',$order=0,$page=1,$limit=25){
      switch($order){
        case 1:
-       $order=' ORDER BY a.hits ASC '; break;
+       //$order=' ORDER BY a.hits ASC '; break;
+       $order=' ORDER BY a.ptime DESC '; break;
        case 2:
-       $order=' ORDER BY a.hits DESC '; break;
+       //$order=' ORDER BY a.hits DESC '; break;
+       $order=' ORDER BY a.ptime ASC '; break;
        default:
        $order=' ORDER BY a.ptime DESC ';
      }
@@ -144,11 +146,14 @@ class emuleModel extends baseModel{
      $page = $page ? $page : 0;
      $page *= $limit;
      if($cid){
+/*
        $cids = $this->getAllCateidsByCid($cid);
        $cids = implode(',',$cids);
        $where = ' a.`cid` in ('.$cids.') AND ';
+*/
+       $where = ' a.`cid`='.$cid.' AND ';
      }
-     $sql = sprintf('SELECT %s,c.`name` as cname FROM %s as a LEFT JOIN %s as c ON (a.cid=c.id) WHERE %s a.`flag`=1 AND c.flag=1 %s LIMIT %d,%d',$this->_dataStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix('emule_cate'),$where,$order,$page,$limit);
+     $sql = sprintf('SELECT %s FROM %s as a WHERE %s a.`flag`=1 %s LIMIT %d,%d',$this->_dataStruct,$this->db->dbprefix('emule_article'),$where,$order,$page,$limit);
 //echo $sql;exit;
      $data = array();
      $data['emulelist'] = $this->db->query($sql)->result_array();
@@ -157,8 +162,6 @@ class emuleModel extends baseModel{
        $val['utime'] = date('Y/m/d', $val['utime']);
        $val['url'] = $this->get_link('topic','',$val['id']);
      }
-     $data['postion'] = $this->getsubparentCate($cid);
-     $data['subcatelist'] = $this->getAllSubcateByCid($cid);
      //$data['atotal']   = $this->getCateAtotal($cid);
      return $data;
   }
@@ -200,7 +203,7 @@ class emuleModel extends baseModel{
   }
 
   public function getEmuleTopicByAid($aid,$uid=0,$isadmin=false,$edite=1){
-     $where = '';
+     $where = ' LIMIT 1';
      if($uid && !$isadmin && $edite)
        $where = sprintf(' AND `uid`=%d LIMIT 1',$uid);
 
@@ -209,7 +212,6 @@ class emuleModel extends baseModel{
      $data = array();
      $data['info'] = $this->db->query($sql)->row_array();
      $data['info']['url'] = $this->get_link('topic','',$data['info']['id']);
-     $data['postion'] = $this->getsubparentCate($data['info']['cid']);
      return $data;
   }
 

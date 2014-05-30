@@ -43,30 +43,6 @@
             </div>
 <?php if (0){ ?>            
 	<div class="resInfoBox" id="membertable">
-	  <div class="header">
-	   <a class="imgs" href="http://www.verycd.com/i/4416523/" onClick="" style="text-decoration:none;"><img src="">
-	    <span class="follow">关注 <em>2</em></span>
-	      <span class="fans">粉丝 <em>340</em></span>
-                	</a>
-				</div>
-				<div class="context">
-					<p class="text">
-						<strong><a hoverstyle="3" hovertips="type=2&amp;id=4416523" href="http://www.verycd.com/i/4416523/" onClick="VeryCD.TrackEvent('topic','发布者','用户名');">达漫V</a></strong>
-						<span><img src="/15.gif" class="honorimage" title="金光盘(Exp:17641)" align="absmiddle" height="20" width="25"></span>
-											</p>
-					<p class="num">精华资源: <a onClick="" href="http://www.verycd.com/i/4416523/create/folders/?stat=elite">169</a></p>
-					<p class="num">全部资源: <a onClick="" href="http://www.verycd.com/i/4416523/create/folders/?stat=total">172</a></p>
-										<div class="btn">
-						<div class="haddle_btn">
-					        <div data-follow-type="0" data-follow-id="4416523" data-follow="0" style="" class="haddle_btn" onClick="">
-					        	<a data-follow="0" style="" class="light_addbtn" href="#"><span class="addicon"></span>加关注</a>
-								<span data-follow="1" style="display:none;" class="addbtn_even"><span class="addbtn_dgray"></span>已关注<em>|</em><a class="red" style="cursor:pointer;">取消</a></span>
-								<a data-follow="2" style="display:none;" class="light_addbtn" href="#"><span class="addicon_a"></span><em>|</em><span class="addicon"></span>加关注</a>
-						    	<span data-follow="3" style="display:none;" class="addbtn_even"><span class="addicon_c"></span>相互关注<em>|</em><a class="red" style="cursor:pointer;">取消</a></span>
-					        </div>
-						</div>
-					</div>
-									</div>
 			</div>
 <?php } ?>
 			        </div>
@@ -122,9 +98,6 @@
 
 </div>
         <div id="favWindow" class="glassbox" style="display:none">
-        <div class="loginNote"><span style="margin-left:6px;margin-top:2px;display:inline-block;">请登录</span></div><iframe id="favIframe" src="" marginwidth="0" marginheight="0" border="0" allowtransparency="true" frameborder="0" scrolling="no"></iframe><div class="bottom-bar">
-        <a href="javascript://" class="closeButton" onClick="closeLoginBox()">关闭</a>
-                </div>
                 </div>
         <div style="clear:both"></div>
         <!-- ads start -->
@@ -141,8 +114,8 @@
             <div class="iptcom" id="iptcomED2K">
                  <div class="app-dl">
 <?php
-echo '<a title="【',substr($info['ourl'],0,-5),'.zip】" href="',$showimgapi,$info['download'],'&filename=',substr($info['ourl'],0,-5),'" target="_blank" >','立刻下载至电脑</a>';
-echo '<a title="问题反馈" href="http://goo.gl/86PJc4" target="_blank" >','问题反馈</a>';
+echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_download\',\'',$info['name'],'\',\'',$info['url'],'\');" title="【',substr($info['ourl'],0,-5),'.zip】" href="',$showimgapi,$info['download'],'&filename=',substr($info['ourl'],0,-5),'" target="_blank" >','立刻下载至电脑</a>';
+echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_question\',\'',$info['name'],'\',\'',$info['url'],'\');" title="问题反馈" href="http://goo.gl/86PJc4" target="_blank" >','问题反馈</a>';
 if($verifycode){
   echo '<h1 style="color:red;text-align:center;">温馨提示:输入验证码即可显示下载地址!</h1><form id="verify_form">',$verifycode,'</form>';
 ?>
@@ -180,7 +153,7 @@ alert('验证码输入有误!');
 }
 ?>
 </div>
-                 <div onclick="_hmt.push(['_trackEvent', 'VIPdownload', 'click', '<?php echo $info['url'];?>'])"  style="border:1px solid #faccaa; background:#ffffce; text-align:center; clear:both; padding: 5px 10px; margin:5px 10px 5px 0; font-size:1.2em">
+                 <div onclick="ga('send','event', 'VIPdownload', 'click', '<?php echo $info['url'];?>');"  style="border:1px solid #faccaa; background:#ffffce; text-align:center; clear:both; padding: 5px 10px; margin:5px 10px 5px 0; font-size:1.2em">
 VIP通道:<?php echo $info['vipdwurl'];?>
 </div>
             </div>
@@ -208,7 +181,7 @@ VIP通道:<?php echo $info['vipdwurl'];?>
 
     	<table class="restable topic_class_restable">
 	<tbody>
-<?php foreach($info['relatdata'] as $key=>$row){
+<?php $length = count($info['relatdata'])-1;foreach($info['relatdata'] as $key=>$row){
 if($key%4==0){
    echo '<tr>';
 }
@@ -218,7 +191,7 @@ if($key%4==0){
 <a style="display:block;" title="<?php echo $row['name'];?>" class="folder-entry-title" href="<?php echo $row['url'];?>" onClick="" target="_blank"><?php echo $row['name'];?></a>
 </td>
 <?php
-  if($key%4==3 || $key == (count($info['relatdata'])-1)){
+  if($key%4==3 || $key == $length){
      echo '</tr>';
   }
 }

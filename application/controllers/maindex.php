@@ -78,27 +78,18 @@ class Maindex extends Usrbase {
     if($page < 11){
        $data = array();
        $data['emulelist'] = $this->mem->get('emulelist'.$cid.'-'.$page.$order);
-       $data['subcatelist'] = array();
-       $data['postion'] = $this->mem->get('listpostion'.$cid);
 //echo '<pre>';var_dump($data);exit;
        if( empty($data['emulelist'])){
 //die($this->expirettl['12h'].'empty');
          $data = $this->emulemodel->getArticleListByCid($cid,$order,$page);
-//echo '<pre>';var_dump($data);exit;
          $this->mem->set('emulelist'.$cid.'-'.$page.$order,$data['emulelist'],$this->expirettl['1h']);
-         //$this->mem->set('listatotal'.$cid,$data['atotal'],$this->expirettl['1h']);
-         //$this->mem->set('listsubcatelist'.$cid,$data['subcatelist'],$this->expirettl['1h']);
-         $this->mem->set('listpostion'.$cid,$data['postion'],$this->expirettl['1h']);
        }
     }else{
        $data = $this->emulemodel->getArticleListByCid($cid,$order,$page);
     }
-       $data['atotal'] = $this->viewData['rootCate'][$cid]['atotal'];
-         $this->_rewrite_list_url($data['postion']);
-         //$this->_rewrite_list_url($data['subcatelist']);
-         $this->_rewrite_article_url($data['emulelist']);
+    $data['atotal'] = $this->viewData['rootCate'][$cid]['atotal'];
+    $this->_rewrite_article_url($data['emulelist']);
     $data['emulelist'] = is_array($data['emulelist']) ? $data['emulelist']: array();
-    $cpid = isset($data['postion'][0]['id'])?$data['postion'][0]['id']:0;
     $this->load->library('pagination');
     $config['base_url'] = sprintf('/maindex/lists/%d/%d/',$cid,$order);
     $config['total_rows'] = $data['atotal'];
@@ -118,15 +109,11 @@ class Maindex extends Usrbase {
     $page_string = $this->pagination->create_links();
 // seo setting
     $title = $kw = '';
-    foreach($data['postion'] as $row){
-       $title .= $title ? '_' : '';
-       $title .= $row['name'];
-       $kw .= $row['name'].',';
-    }
+    $kw = $this->viewData['rootCate'][$cid]['name'];
     $keywords = $kw.$this->seo_keywords;
-   
-    $this->assign(array('seo_title'=>$title,'seo_keywords'=>$keywords,'cpid'=>$cpid,'infolist'=>$data['emulelist'],'postion'=>$data['postion']
-    ,'page_string'=>$page_string,'subcatelist'=>$data['subcatelist'],'cid'=>$cid));
+    $postion = array($this->viewData['rootCate'][$cid]);
+    $this->assign(array('seo_title'=>$title,'seo_keywords'=>$keywords,'infolist'=>$data['emulelist']
+    ,'postion'=>$postion,'page_string'=>$page_string,'subcatelist'=>$data['subcatelist'],'cid'=>$cid));
     $this->view('index_lists');
   }
   public function topic($aid){
@@ -134,7 +121,6 @@ class Maindex extends Usrbase {
     $data = $this->emulemodel->getEmuleTopicByAid($aid,$this->userInfo['uid'], $this->userInfo['isadmin'],0);
     $data['info']['ptime']=date('Y:m:d', $data['info']['ptime']);
     $data['info']['utime'] = date('Y/m/d', $data['info']['utime']);
-    $this->_rewrite_list_url($data['postion']);
     $this->_rewrite_article_url($data['info']);
     $data['info'] = $data['info'][0];
     $data['info']['fav'] = 0;
@@ -144,13 +130,13 @@ class Maindex extends Usrbase {
     $data['info']['relatdata'] = $data['info']['relatdata']["emulelist"];
 // seo setting
     $kw = '';
+    $data['postion'] = array($this->viewData['rootCate'][$cid],array('url'=>'javascript:void(0);','name'=>$data['info']['name']));
     foreach($data['postion'] as $row){
        $kw .= $row['name'].',';
     }
     $default_seo = $data['info']['keyword']?$data['info']['keyword']:$this->seo_keywords;
     $keywords = $data['info']['name'].','.$kw.$default_seo;
     $title = $data['info']['name'];
-    //$data['info']['intro'] = str_replace('www.ed2kers.com',$this->viewData['domain'],$data['info']['intro']);
     $data['info']['intro'] = str_replace(array('<img </td>','IMG_API_URL='),array('<img ',$this->showimgapi),$data['info']['intro']);
     // not VIP Admin check verify
     $emu_aid = isset($_COOKIE['hk8_verify_topic_dw'])?strcode($_COOKIE['hk8_verify_topic_dw'],false):'';

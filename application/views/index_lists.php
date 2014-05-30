@@ -103,7 +103,7 @@ foreach($infolist as $row){
         <li>
           <a href="<?php echo $row['url'];?>" onClick=""><img class="lazy file_img" data-original="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" /><noscript><img src="<?php echo $showimgapi,$row['cover'];?>&w=100" title="<?php echo $row['name'];?>" alt="<?php echo $row['name'];?>" class="file_img" /></noscript></a>
  <h3>
-<span class="left_topics_class_sort"><a href="<?php echo $row['curl'];?>"><?php echo $row['cname'];?></a></span> <a href="<?php echo $row['url'];?>" onClick=""><?php echo $row['name'];?></a>
+<span class="left_topics_class_sort"><a href="<?php echo $rootCate[$row['cid']]['url'];?>"><?php echo $rootCate[$row['cid']]['name'];?></a></span> <a href="<?php echo $row['url'];?>" onClick=""><?php echo $row['name'];?></a>
  </h3>
         <div class="blog_entry">
 <?php if(0){

@@ -115,7 +115,7 @@ foreach($list['list'] as $k=>$row){
 	<div class="list_ins">
 	<div class="list_top clearfix">
 	<div class="li_view_num"><?php echo $row['hits']?></div>
-	<div class="li_title"><span class="compositor red_compositor"><?php echo $k+1;?></span><span>[<?php echo $row['cname'];?>]</span>&nbsp;<strong><?php echo $row['name'];?></strong></div>
+	<div class="li_title"><span class="compositor red_compositor"><?php echo $k+1;?></span><span>[<?php echo $rootCate[$row['cid']]['name'];?>]</span>&nbsp;<strong><?php echo $row['name'];?></strong></div>
 	</div>
 	<div class="list_main clearfix">
 	<div class="li_img">
@@ -201,7 +201,7 @@ foreach($v as $k=>$row){
 </ul>
 <div style="" class="more_t"><a
 	onclick="" target="_blank"
-	href="<?php echo $val['url'];?>">更多<?php echo $row['cname'];?>&gt;&gt;</a></div>
+	href="<?php echo $rootCate[$row['cid']]['url'];?>">更多<?php echo $rootCate[$row['cid']]['name'];?>&gt;&gt;</a></div>
 </div>
 <?php } ?>
 </div>

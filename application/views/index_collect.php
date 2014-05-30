@@ -95,7 +95,7 @@ foreach($infolist as $row){
 <h3>收藏: <span class="date-time"><?php echo $row['atime'];?></span></h3>
 <h3>更新: <span class="date-time"><?php echo $row['utime'];?></span></h3>
  <h3>
-<span class="left_topics_class_sort"><a href="<?php echo $row['curl'];?>"><?php echo $row['cname'];?></a></span> <a href="<?php echo $row['url'];?>" onClick=""><?php echo $row['name'];?></a>
+<span class="left_topics_class_sort"><a href="<?php echo $rootCate[$row['cid']]['url'];?>"><?php echo $rootCate[$row['cid']]['name'];?></a></span> <a href="<?php echo $row['url'];?>" onClick=""><?php echo $row['name'];?></a>
  </h3>
   </li>
 <?php

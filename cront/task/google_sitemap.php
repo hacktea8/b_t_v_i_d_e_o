@@ -14,7 +14,7 @@ class model{
   }
   public function getList($page = 1,$limit = 100){
     $start = $page * $limit;
-    $sql = sprintf('SELECT `id`,`utime` FROM '.$this->db->getTable('emule_article').' WHERE `flag`=1 AND `onlinedate`<=%d AND `id`>%d  LIMIT %d,%d',date('Ymd'),$aid,$start,$limit);
+    $sql = sprintf('SELECT `id`,`utime` FROM '.$this->db->getTable('emule_article').' WHERE `flag`=1 AND `onlinedate`<=%d LIMIT %d,%d',date('Ymd'),$start,$limit);
      return $this->db->result_array($sql);
   }
   public function addIndex($data = array()){

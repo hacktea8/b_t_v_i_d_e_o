@@ -31,12 +31,13 @@ $cover = substr($cover,3);
 echo $cover,"\n";
 //exit;
 //echo strlen($cover);exit;
-if( in_array($cover,array('44','404'))){
+$status = preg_replace('#^\d#','',$cover);
+if( in_array($status,array(44,404))){
   die('Token 失效!');
 }
-if(0 == $cover){
+if(0 == $status){
   echo "$val[id] cover is down!\n";
-  setcoverByid(4,$val['id']);
+//  seterrcoverByid(4,$val['id']);
   continue;
 }
 $info = getvideobyid($val['id']);
@@ -69,6 +70,9 @@ $data['imgurl'] = $img_url;
 $covers = getHtml($data);
 //去除字符串前3个字节
 $covers = substr($covers,3);
+if(false == stripos($covers,'.')){
+die("\nid: $val[id] down contents images error!\n");
+}
 //echo $covers,"\n";
 $img_str = 'IMG_API_URL='.$covers;
 $info['intro'] = str_replace($img,$img_str,$info['intro']);
@@ -93,7 +97,7 @@ file_put_contents('imgres.txt',$val['id']);
 
 function getnocoverlist($limit = 20){
     global $db;
-    $sql=sprintf('SELECT `id`,`sitetype`,`thum`,`ourl` FROM %s WHERE `cover`=\'0\' LIMIT %d',$db->getTable('emule_article'),$limit);
+    $sql=sprintf('SELECT `id`,`sitetype`,`thum`,`ourl` FROM %s WHERE `iscover`=0 LIMIT %d',$db->getTable('emule_article'),$limit);
     $res=$db->result_array($sql);
     return $res;
 }
@@ -114,12 +118,21 @@ function setcontentdata($data,$id){
   $db->query($sql);
   return true;
 }
-function setcoverByid($cover = '',$id = 0){
+function seterrcoverByid($cover = 4,$id = 0){
     if(!$id){
        return false;
     }
     global $db;
-    $sql = sprintf('UPDATE %s SET `cover`=\'%s\',flag=1 WHERE `id`=%d LIMIT 1',$db->getTable('emule_article'),mysql_real_escape_string($cover),$id);
+    $sql = sprintf('UPDATE %s SET `iscover`=%d WHERE `id`=%d LIMIT 1',$db->getTable('emule_article'),$cover,$id);
+    $db->query($sql);
+}
+function setcoverByid($cover = '',$id = 0){
+    $pos = stripos($cover,'.');
+    if(!$id || !$pos){
+       return false;
+    }
+    global $db;
+    $sql = sprintf('UPDATE %s SET `cover`=\'%s\',`iscover`=1,flag=1 WHERE `id`=%d LIMIT 1',$db->getTable('emule_article'),mysql_real_escape_string($cover),$id);
     $db->query($sql);
 }
 function getHtml(&$data){
