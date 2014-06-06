@@ -51,7 +51,7 @@ class model{
 }
 
 $type = 1;
-$base_url = 'http://btv.hacktea8.com/';
+$base_url = 'http://btv.emubt.com/';
 $count = 1;
 $countLimit = 30000;
 $model = new model();

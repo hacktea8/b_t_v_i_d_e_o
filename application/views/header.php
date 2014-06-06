@@ -36,6 +36,9 @@
 <?php } ?>
 </head>
 <body>
+<?php if($click_ad_link){?>
+<a href="<?php echo $click_ad_link;?>" target="_blank" style="width: 100%;height: auto;z-index: 999999;position: absolute;margin-left: -699px;" id="adlink_button">  </a>
+<?php }?>
 <a style="display: none;" id="gotop" href="#" title="返回顶部"
 	onfocus="this.blur()"> <span><em class="tr">♦</em><em
 	class="tube">▐</em></span></a>

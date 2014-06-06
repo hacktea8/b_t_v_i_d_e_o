@@ -77,6 +77,9 @@ _Userlogin();
 <script type="text/javascript">
 var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_5893035'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D5893035%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
 var _hmt = _hmt || [];(function() {  var hm = document.createElement("script");  hm.src = "//hm.baidu.com/hm.js?268a910d12a04866f4f834ce95825591";  var s = document.getElementsByTagName("script")[0];   s.parentNode.insertBefore(hm, s);})();</script>
+<?php if(in_array($_a,array('lists','topic'))){ ?>
+<script  src="<?php echo $js_url,'moneysad.js?v=',$version;?>" ></script>
+<?php } ?>
 </div>
 </body>
 </html>
