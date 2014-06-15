@@ -1,0 +1,6 @@
+User-agent: *
+Sitemap: http://btv.emubt.com/google_sitemap.xml
+Disallow: /maindex/addCollect/
+Disallow: /maindex/login
+Disallow: /maindex/loginout
+Disallow: /maindex/isUserInfo

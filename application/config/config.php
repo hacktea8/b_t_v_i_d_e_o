@@ -22,7 +22,7 @@ $config['img_url']	= '/public/images/';
 $config['adm_js_url']	= '/public/js/admin/';
 $config['adm_css_url']	= '/public/css/admin/';
 $config['adm_img_url']	= '/public/images/admin/';
-$config['domain']	= 'btv.hacktea8.com';
+$config['domain']	= 'btv.emubt.com';
 $config['web_title']	= '静思乐BT影视';
 $config['login_url']	= 'http://www.hacktea8.com/member.php?mod=logging&action=login&goto=';
 

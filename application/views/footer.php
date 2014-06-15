@@ -1,11 +1,17 @@
 </div>
 <div id="advertisement_bottom" class="mainDiv">
-<?php if(in_array($_c,array('lists'))){?>
-<script type="text/javascript">BAIDU_CLB_fillSlot("902635");</script>
+<?php if( 0&& in_array($_c,array('lists','topic'))){?>
+<script type="text/javascript">BAIDU_CLB_fillSlot("904797");</script>
 <?php }?>
 <div class="line_space"></div>
 </div>
 
+<div class="mainDiv">
+<?php if(in_array($_a,array('lists','topic'))){?>
+<script type="text/javascript">BAIDU_CLB_fillSlot("902635");</script>
+<?php }?>
+<div class="line_space"></div>
+</div>
 <div class="clear"></div>
 <div class="mainDiv">
 <div id="bottom_div">
