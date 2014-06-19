@@ -115,6 +115,7 @@ class Maindex extends Usrbase {
 // seo setting
     $title = $kw = '';
     $kw = $this->viewData['rootCate'][$cid]['name'];
+    $title = $kw;
     $keywords = $kw.$this->seo_keywords;
     $postion = array($this->viewData['rootCate'][$cid]);
     $this->assign(array('seo_title'=>$title,'seo_keywords'=>$keywords,'infolist'=>$data['emulelist']
@@ -136,8 +137,13 @@ class Maindex extends Usrbase {
     $data['info']['fav'] = 0;
     $cid = $data['info']['cid'] ? $data['info']['cid'] : 0;
     $cpid = isset($data['postion'][0]['id'])?$data['postion'][0]['id']:0;
-    $data['info']['relatdata'] = $this->emulemodel->getArticleListByCid($data['info']['cid'],1,2,16);
-    $data['info']['relatdata'] = $data['info']['relatdata']["emulelist"];
+    $topic_relate_key = 'topic_relate_'.$cid;
+    $data['info']['relatdata'] = $this->mem->get($topic_relate_key);
+    if(empty($data['info']['relatdata'])){
+      $data['info']['relatdata'] = $this->emulemodel->getArticleListByCid($data['info']['cid'],1,2,16);
+      $data['info']['relatdata'] = $data['info']['relatdata']["emulelist"];
+      $this->mem->set($topic_relate_key,$data['info']['relatdata'],$this->expirettl['1h']);
+    }
 // seo setting
     $kw = '';
     $data['postion'] = array($this->viewData['rootCate'][$cid],array('url'=>'javascript:void(0);','name'=>$data['info']['name']));
@@ -146,19 +152,21 @@ class Maindex extends Usrbase {
     }
     $default_seo = $data['info']['keyword']?$data['info']['keyword']:$this->seo_keywords;
     $keywords = $data['info']['name'].','.$kw.$default_seo;
-    $title = $data['info']['name'];
+    $title = $data['info']['name'].'-'.$this->viewData['rootCate'][$cid]['name'];
     $data['info']['intro'] = str_replace(array('<img </td>','IMG_API_URL='),array('<img ',$this->showimgapi),$data['info']['intro']);
     // not VIP Admin check verify
+    $verifycode = '';
+/*
     $emu_aid = isset($_COOKIE['hk8_verify_topic_dw'])?strcode($_COOKIE['hk8_verify_topic_dw'],false):'';
     $emu_aid = explode("\t",$emu_aid);
     $emu_aid = $emu_aid[0];
-    $verifycode = '';
     if( 0 && !($emu_aid == $data['info']['id'] || $this->userInfo['isvip'] || $this->userInfo['isadmin'])){
        $data['info']['downurl'] = '';
        $data['info']['vipdwurl'] = '';
        $this->load->library('verify');
        $verifycode = $this->verify->show();
     }
+*/
     $isCollect = $this->emulemodel->getUserIscollect($this->userInfo['uid'],$data['info']['id']);
     $this->assign(array('isCollect'=>$isCollect,'verifycode'=>$verifycode,'seo_title'=>$title,'seo_keywords'=>$keywords,'cid'=>$cid,'cpid'=>$cpid,'info'=>$data['info'],'postion'=>$data['postion'],'aid'=>$aid)); 
 //echo '<pre>';var_dump($data['info']);exit;
