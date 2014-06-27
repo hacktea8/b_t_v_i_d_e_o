@@ -34,6 +34,7 @@
 <?php if(in_array($_a,array('index','lists','topic'))){ ?>
 <script type="text/javascript" src="http://cbjs.baidu.com/js/m.js"></script>
 <?php } ?>
+<script type="text/javascript" src="<?php echo $js_url;?>lanage.js?v=<?php echo $version;?>"></script>
 </head>
 <body>
 <?php if($click_ad_link){?>
@@ -57,7 +58,10 @@ onclick="" class="hover_red"><strong>首页</strong></a></li>
   <li class="link_item">
 <a version="1.0" class="qzOpenerDiv" href="http://goo.gl/LwcZXa" target="_blank" alt="赞一个" title="赞一个">赞一个</a>
   </li>
-	</ul>
+<li class="link_item">
+<a style="color: blue;font-size: medium;" href="javascript:transformLan();" id="a-lang" title="點擊以繁體中文方式浏覽" name="a-lang">繁體中文切換</a>
+</li>
+</ul>
 <div id="header_login">
 <span class="link_box">
 <ul>
