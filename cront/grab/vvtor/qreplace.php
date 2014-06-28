@@ -8,7 +8,7 @@ require_once $root.'../db.class.php';
 $model = new Model();
 
 $strreplace = array(
-array('from'=>'www.ed2kers.com','to'=>'emu.hacktea8.com')
+array('from'=>'www.ed2kers.com','to'=>'www.emubt.com')
 ,array('from'=>'\"','to'=>'"')
 ,array('from'=>'\r\n','to'=>'')
 ,array('from'=>'\n','to'=>'')

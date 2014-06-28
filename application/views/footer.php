@@ -1,4 +1,5 @@
 </div>
+<a class="show_site_tags"><?php echo $seo_keywords;?></a>
 <div id="advertisement_bottom" class="mainDiv">
 <?php if( in_array($_a,array('lists','topic'))){?>
 <script type="text/javascript">BAIDU_CLB_fillSlot("904797");</script>

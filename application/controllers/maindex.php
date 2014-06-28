@@ -150,10 +150,14 @@ class Maindex extends Usrbase {
     foreach($data['postion'] as $row){
        $kw .= $row['name'].',';
     }
-    $default_seo = $data['info']['keyword']?$data['info']['keyword']:$this->seo_keywords;
+    $title = $data['info']['name'];
+    $default_seo = sprintf('%s下载,%s在线,%s点播,%s种子,%s快播,%s西瓜,%s吉吉,%s网盘下载,%s共享,%s分享,%s百度影音',$title,$title,$title,$title,$title,$title,$title,$title,$title,$title,$title);
     $keywords = $data['info']['name'].','.$kw.$default_seo;
-    $title = $data['info']['name'].'-'.$this->viewData['rootCate'][$cid]['name'];
+    $title .= '-'.$this->viewData['rootCate'][$cid]['name'];
     $data['info']['intro'] = str_replace(array('<img </td>','IMG_API_URL='),array('<img ',$this->showimgapi),$data['info']['intro']);
+    $seo_description = strip_tags($data['info']['intro']);
+    $seo_description = preg_replace('#\s+#Uis','',$seo_description);
+    $seo_description = mb_substr($seo_description,0,250);
     // not VIP Admin check verify
     $verifycode = '';
 /*
@@ -168,7 +172,11 @@ class Maindex extends Usrbase {
     }
 */
     $isCollect = $this->emulemodel->getUserIscollect($this->userInfo['uid'],$data['info']['id']);
-    $this->assign(array('isCollect'=>$isCollect,'verifycode'=>$verifycode,'seo_title'=>$title,'seo_keywords'=>$keywords,'cid'=>$cid,'cpid'=>$cpid,'info'=>$data['info'],'postion'=>$data['postion'],'aid'=>$aid)); 
+    $this->assign(array('isCollect'=>$isCollect,'verifycode'=>$verifycode
+    ,'seo_title'=>$title,'seo_keywords'=>$keywords,'cid'=>$cid,'cpid'=>$cpid
+    ,'info'=>$data['info'],'postion'=>$data['postion'],'aid'=>$aid
+    ,'seo_description'=>$seo_description
+    )); 
 //echo '<pre>';var_dump($data['info']);exit;
     $ip = $this->input->ip_address();
     $key = sprintf('hitslog:%s:%d',$ip,$aid);

@@ -48,7 +48,7 @@ class Webbase extends CI_Controller {
                 'admin_email'=>$this->config->item('admin_email'),'errorimg'=>'/public/images/show404.jpg',
                 'img_url'=>$this->config->item('img_url'),'js_url'=>$this->config->item('js_url'),
                 'toptips'=>$this->config->item('toptips'),'web_title'=>$this->config->item('web_title')
-                ,'version'=>20140109,'login_url'=>$this->config->item('login_url'),'uinfo'=>$this->userInfo
+                ,'version'=>20140628,'login_url'=>$this->config->item('login_url'),'uinfo'=>$this->userInfo
                 ,'_c'=>$this->_c,'_a'=>$this->_a
     ));
   }
