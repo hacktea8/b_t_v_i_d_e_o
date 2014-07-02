@@ -33,7 +33,6 @@
     position: absolute;
     right: 0;
     top: 0;
-    background: url(../images/xzb_main.png) no-repeat;
 }
 .list-ord .up{
     background-position: -80px -20px;
@@ -65,7 +64,6 @@
     display: block;
     width: 20px;
     height: 20px;
-    background: url(../images/xzb_main.png) no-repeat;
     margin-left: 1px;
 }
 .list-type .img{
@@ -158,14 +156,12 @@
 .row-letter .let-star .star{
     width: 90px;
     height: 16px;
-    background: url(../images/xzb_main.png) no-repeat 0 -80px;
     margin-top: 6px;
 }
 .soft-info .star-bar .star i,
 .row-letter .let-star .star i{
     display: block;
     height: 16px;
-    background: url(../images/xzb_main.png) no-repeat 0 -60px;
 }
 .li-contnet .desc{
     text-indent: 2em;

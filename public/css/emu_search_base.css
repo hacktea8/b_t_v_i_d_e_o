@@ -275,7 +275,6 @@ a i{cursor:pointer; }
 .focus-img .btn i{
     width: 20px;
     height: 20px;
-    background: url(../images/xzb_main.png) no-repeat;
     display: block;
     margin: 10px auto 0;
 }
@@ -339,7 +338,6 @@ a i{cursor:pointer; }
 }
 .txt-list li{
     vertical-align: middle;
-    background: url(../images/xzb_main.png) no-repeat -198px 12px;
     padding-left: 8px;
     height: 26px;
     line-height: 26px;
@@ -501,7 +499,6 @@ a i{cursor:pointer; }
     float: right;
     height: 11px;
     width: 70px;
-    background: url(../images/xzb_main.png) no-repeat 0 -40px;
     overflow: hidden;
     margin-top: 3px;
 }
@@ -509,7 +506,6 @@ a i{cursor:pointer; }
     display: block;
     height: 11px;
     overflow: hidden;
-    background: url(../images/xzb_main.png) no-repeat 0 -20px;
 }
 .soft-top-list .app-img{
     height: 60px;
@@ -642,7 +638,6 @@ a i{cursor:pointer; }
 .gotop a{
     display: block;
     height: 32px;
-    background: url(../images/xzb_main.png) no-repeat -100px -65px;
     opacity: .6;
     filter: alpha(opacity=60);
 }
