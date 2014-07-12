@@ -96,7 +96,7 @@ class model{
 sleep(2);
     $this->emuleIndex['hot']=$this->getArticleListByCid(0,2,1,15);
 sleep(2);
-    $this->emuleIndex['rand']=$this->getArticleListByCid(0,1,1,15);
+    $this->emuleIndex['rand']=$this->getArticleListByCid(0,1,2,15);
 sleep(2);
 
     $rootCate=$this->getrootCate();

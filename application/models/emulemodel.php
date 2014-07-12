@@ -39,7 +39,7 @@ class emuleModel extends baseModel{
     $limit = 15;
     $tmp = $this->getArticleListByCid(0,$order=0,$page=1,$limit);
     $emuleIndex['new'] = $tmp['emulelist'];
-    $tmp = $this->getArticleListByCid(0,$order=1,$page=1,$limit);
+    $tmp = $this->getArticleListByCid(0,$order=1,$page=2,$limit);
     $emuleIndex['rand'] = $tmp['emulelist'];
     $tmp = $this->getArticleListByCid(0,$order=2,$page=1,$limit);
     $emuleIndex['hot'] = $tmp['emulelist'];
