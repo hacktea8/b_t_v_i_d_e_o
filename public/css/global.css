@@ -69,7 +69,6 @@ list-style-type: none;
 #nav_div .small a.four:hover{ width:62px; color:#fff;background:url(/public/images/global_bar_icon4.gif) no-repeat;}
 #nav_div .small a.three{width:48px; }
 #nav_div .small a.three:hover,#nav_div .small a.active{width:48px;color:#fff;background:url(/public/images/global_bar_icon3.gif) no-repeat;}
-.lazy {display: none;}
 
 a#gotop {
 background-color: #ccc;
