@@ -1,7 +1,7 @@
 </div>
 <a class="show_site_tags"><?php echo $seo_keywords;?></a>
 <div id="advertisement_bottom" class="mainDiv">
-<?php if( $click_ad_dh>=7 && $click_ad_dh<=18 && in_array($_a,array('lists','topic'))){?>
+<?php if( $click_ad_dh>=7 && $click_ad_dh<=17 && in_array($_a,array('lists','topic'))){?>
 <script type="text/javascript">BAIDU_CLB_fillSlot("904797");</script>
 <?php }?>
 <div class="line_space"></div>

@@ -50,7 +50,7 @@ $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'btvideoweb';
-$db['default']['password'] = 'ilovehk8';
+$db['default']['password'] = 'ilove';
 $db['default']['database'] = 'btvideoweb';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = 'bt_';

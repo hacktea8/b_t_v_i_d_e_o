@@ -4,7 +4,7 @@ defined('BASEPATH') || exit('Forbidden');
 *
 *
 */
-class Memcache{
+class Memcached{
   private $_memcached;	// Holds the memcached object
   public $pre = 'btv';
   protected $_memcache_conf = array(
@@ -17,7 +17,7 @@ class Memcache{
 
 // --------------------------------------------------------
   public function __construct($config = array()){
-     $this->_memcached = new Memcached();
+     $this->_memcached = new Memcache();
      foreach($this->_memcache_conf as $cache_server){
      $this->_memcached->addServer(
                      $cache_server['hostname'], $cache_server['port'], $cache_server['weight']);

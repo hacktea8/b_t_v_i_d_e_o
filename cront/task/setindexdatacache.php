@@ -5,7 +5,7 @@ $root=dirname(__FILE__).'/';
 define('BASEPATH', $root.'../../');
 //echo $root;exit;
 require_once($root.'../grab/db.class.php');
-require_once($root.'../../application/libraries/memcache.php');
+require_once($root.'../../application/libraries/memcached.php');
 require_once($root.'../../application/helpers/rewrite_helper.php');
 
 $model=new model();
@@ -18,7 +18,7 @@ class model{
 
   function __construct(){
     $this->db=new DB_MYSQL();
-    $this->mem=new Memcache();
+    $this->mem=new Memcached();
   }
   function getArticleListByCid($cid,$order,$page,$limit){
     switch($order){

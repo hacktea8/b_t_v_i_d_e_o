@@ -13,8 +13,8 @@ class Webbase extends CI_Controller {
   
   public function __construct(){
     parent::__construct();
-    $this->load->library('memcache');
-    $this->mem = &$this->memcache;
+    $this->load->library('memcached');
+    $this->mem = &$this->memcached;
     $this->load->library('rediscache');
     $this->redis = &$this->rediscache;
     $session_uinfo = $this->session->userdata('user_logindata');

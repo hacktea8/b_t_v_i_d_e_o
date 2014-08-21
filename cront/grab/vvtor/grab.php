@@ -10,7 +10,7 @@ require_once $APPPATH.'singleProcess.php';
 $db=new DB_MYSQL();
 
 $data = array('url' => 'http://img.hacktea8.com/fileapi/uploadurl?seq=', 'imgurl'=>'');
-$file_data = array('url' => 'http://img.hacktea8.com/fileapi/uploadurl?seq=', 'imgurl'=>'','filename'=>'');
+$file_data = array('url' => 'http://img.hacktea8.com/filesapi/uploadurl?seq=', 'imgurl'=>'','filename'=>'');
 $task = 5;
 while($task){
 $list = getnocoverlist();
@@ -47,14 +47,14 @@ $filename = substr($header['Content-Disposition'],strlen("attachment; filename*=
 //$filename = str_replace('.html','.zip',$val['ourl']);
 $file_data['filename'] = trim($filename);
 $file_data['imgurl'] = $_root.$info['downurl'];
-//var_dump($file_data);exit;
+#var_dump($file_data);exit;
 $downurl = getHtml($file_data);
 //去除字符串前3个字节
 $downurl = substr($downurl,3);
 if(strlen($downurl)<10){
 sleep(600);exit;
 }
-//echo $downurl,"\n";
+//echo $downurl,"\n";exit;
 
 preg_match_all('#<img .*src="([^"]+)"#Uis',$info['intro'],$match);
 foreach($match[1] as $img){

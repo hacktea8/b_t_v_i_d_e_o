@@ -22,7 +22,7 @@ class DB_MYSQL{
   var $usepconnect = 1;  //使用 pconnect
   var $num_rows = 0;
 
-  public function  __construct($server = "localhost",$user = "btvideoweb",$password = "ilovehk8",$database = "btvideoweb"){
+  public function  __construct($server = "localhost",$user = "btvideoweb",$password = "ilove",$database = "btvideoweb"){
     $this->connect($server,$user,$password,$database);
     mysql_query("set names utf8");
   }
