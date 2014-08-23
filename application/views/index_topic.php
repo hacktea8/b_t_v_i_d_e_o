@@ -111,7 +111,7 @@
             <div class="iptcom" id="iptcomED2K">
                  <div class="app-dl">
 <?php
-echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_download\',\'',$info['name'],'\',\'',$info['url'],'\');" title="【',substr($info['ourl'],0,-5),'.zip】" href="',$showimgapi,$info['download'],'&filename=',substr($info['ourl'],0,-5),'" target="_blank" >','立刻下载至电脑</a>';
+echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_download\',\'',$info['name'],'\',\'',$info['url'],'\');" rel="nofollow" title="【',substr($info['ourl'],0,-5),'.zip】" href="',$showimgapi,$info['download'],'&filename=',substr($info['ourl'],0,-5),'" target="_blank" >','立刻下载至电脑</a>';
 echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_question\',\'',$info['name'],'\',\'',$info['url'],'\');" title="问题反馈" href="http://goo.gl/86PJc4" target="_blank" >','问题反馈</a>';
 if($verifycode){
   echo '<h1 style="color:red;text-align:center;">温馨提示:输入验证码即可显示下载地址!</h1><form id="verify_form">',$verifycode,'</form>';

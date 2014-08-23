@@ -107,7 +107,7 @@ class Maindex extends Usrbase {
     $config['cur_tag_close'] = '</span>';
     $config['suffix'] = '.html';
     $config['use_page_numbers'] = TRUE;
-    $config['num_links'] = 5;
+    $config['num_links'] = 4;
     $config['cur_page'] = $page;
     
     $this->pagination->initialize($config); 
@@ -197,10 +197,10 @@ class Maindex extends Usrbase {
     $page = $page - 1;
     $page = $page < 0 ? 0: $page;
     $list = array();
-    $pageSize = 25;
+    $pageSize = 12;
     if($q){
       $this->load->library('yunsearchapi');
-      $opt = array('query'=>$q,'start'=>$page,'hits'=>$pageSize);
+      $opt = array('query'=>$q,'start'=>$page*$pageSize,'hits'=>$pageSize);
       $this->yunsearchapi->search($list,$opt);
       $hotKeywords = $this->yunsearchapi->getTopQuery($num=8,$days=30);
       //var_dump($hotKeywords);exit;
@@ -214,6 +214,7 @@ var_dump($q);
 var_dump($hotKeywords);
 var_dump($list);exit;
 /**/
+    $page++;
     $hot_search = array();
     $recommen_topic = array();
     $recommen_topic[1] = array();
@@ -233,11 +234,16 @@ var_dump($list);exit;
     $config['cur_tag_close'] = '</span>';
     $config['suffix'] = '.shtml';
     $config['use_page_numbers'] = TRUE;
-    $config['num_links'] = 5;
+    $config['num_links'] = 4;
     $config['cur_page'] = $page;
     $this->pagination->initialize($config);
     $page_string = $this->pagination->create_links();
-    $this->assign(array('searchlist'=>$list['result'],'kw'=>$q,'q'=>$q,'page_string'=>$page_string,'hot_search'=>$hot_search,'recommen_topic'=>$recommen_topic,'hot_topic'=>$hot_topic)); 
+    $seo_title = sprintf('正在搜索%s第%d页',$q,$page);
+    $this->assign(array('searchlist'=>$list['result'],'kw'=>$q,'q'=>$q
+    ,'page_string'=>$page_string,'hot_search'=>$hot_search
+    ,'recommen_topic'=>$recommen_topic,'hot_topic'=>$hot_topic
+    ,'seo_title'=>$seo_title
+    )); 
     $this->load->view('index_search',$this->viewData);
   }
   public function show404($goto = ''){
