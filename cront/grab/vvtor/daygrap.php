@@ -19,13 +19,13 @@ if(0){
  $subcate = json_decode($json, 1);
 }
 
-$abort = 0;
-$lastK = 0;
+$abort = 1;
+$lastK = 1;
 foreach($subcate as $k => $_cate){
  if(!$_cate['oname']){
   continue;
  }
- echo "\n=== Current Index $k Cid $_cate[id] Url =====\n";
+ echo "\n=== Current Index $k Cid $_cate[id] Url $_cate[oname] =====\n";
  if($abort && $k<$lastK){
   continue;
  }

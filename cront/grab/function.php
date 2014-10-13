@@ -179,7 +179,7 @@ function getinfodetail(&$data){
   }
   //kw
   preg_match('#<meta name="keywords" content="(.+)" />#U',$html,$match);
-  $data['keyword'] = '';trim($match[1]);
+  $data['keyword'] = '';//trim($match[1]);
   //
   $data['ptime']=time();//strtotime(trim($match[1]));
   $data['utime']=time();//strtotime(trim($match[2]));
@@ -206,7 +206,7 @@ function getinfodetail(&$data){
      echo "抓取失败 $data[ourl] \r\n";
      return false;
   }
-  echo '<pre>';var_dump($data);exit;
+  //echo '<pre>';var_dump($data);exit;
   //$aid=$model->addArticle($data);
   $aid = addArticle($data);
   if(!$aid){
@@ -214,7 +214,7 @@ function getinfodetail(&$data){
     exit;return false;
   }
   echo "添加成功! $aid \r\n";
-exit;
+//exit;
 }
 
 function getHtml($url){
