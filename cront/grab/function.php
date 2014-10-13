@@ -1,9 +1,12 @@
 <?php
 
+/*
 include_once($APPPATH.'../db.class.php');
 include_once($APPPATH.'../model.php');
 
 $model=new Model();
+*/
+include_once($APPPATH.'../post_fun.php');
 
 /*
 获取配对的标签的内容
@@ -147,7 +150,8 @@ function getinfolist(&$cateurl){
       $oid=preg_replace('#\.html#','',$list[1]);
       $oname=trim($list[2]);
 //先判断是否存在
-      $aid=$model->checkArticleByOname($oname);
+      //$aid=$model->checkArticleByOname($oname);
+      $aid = checkArticleByOname($oname);
       if($aid){
          echo "{$aid}已存在未更新!\r\n";
          continue;
@@ -175,7 +179,7 @@ function getinfodetail(&$data){
   }
   //kw
   preg_match('#<meta name="keywords" content="(.+)" />#U',$html,$match);
-  $data['keyword']=trim($match[1]);
+  $data['keyword'] = '';trim($match[1]);
   //
   $data['ptime']=time();//strtotime(trim($match[1]));
   $data['utime']=time();//strtotime(trim($match[2]));
@@ -202,13 +206,15 @@ function getinfodetail(&$data){
      echo "抓取失败 $data[ourl] \r\n";
      return false;
   }
-//  echo '<pre>';var_dump($data);exit;
-  $aid=$model->addArticle($data);
+  echo '<pre>';var_dump($data);exit;
+  //$aid=$model->addArticle($data);
+  $aid = addArticle($data);
   if(!$aid){
-    echo "添加失败! $data[ourl] \r\n";
-    return false;
+    echo "添加失败! $data[ourl]  Cid $data[cid] \r\n";
+    exit;return false;
   }
   echo "添加成功! $aid \r\n";
+exit;
 }
 
 function getHtml($url){

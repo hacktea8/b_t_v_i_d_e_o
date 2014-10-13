@@ -9,7 +9,7 @@ include_once($APPPATH.'config.php');
 /*============ Get Cate article =================*/
 
 $res='excres.txt';
-if(1){
+if(0){
  getsubcatelist($subcate);
  $json = json_encode($subcate);
  file_put_contents($APPPATH.'subcate.json', $json);

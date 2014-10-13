@@ -100,7 +100,7 @@ class Model{
     if(!$data){
        return false;
     }
-    $contents = $this->copy_array($data,array('downurl','keyword','downurl','intro'));
+    $contents = $this->copy_array($data,array('keyword','downurl','intro'));
     $head = $this->copy_array($data,array('ptime','utime','cid','thum','name','ourl'));
     $sql=$this->db->insert_string($this->db->getTable('emule_article'),$head);
     $this->db->query($sql);
