@@ -1,4 +1,9 @@
 <?php
+/**
+
+UPDATE `bt_emule_article` SET `iscover`=0 WHERE `id` IN(SELECT id FROM `bt_emule_article_content0` where download like '%.jpg');
+
+*/
 
 $APPPATH=dirname(__FILE__).'/';
 include_once($APPPATH.'../db.class.php');
@@ -65,17 +70,17 @@ foreach($match[1] as $img){
  if('http://' != substr($img,0,7)){
   $img_url = $_root.$img;
  }
-//echo "== $val[thum] ==\n";
-$data['imgurl'] = $img_url;
-$covers = getHtml($data);
-//去除字符串前3个字节
-$covers = substr($covers,3);
-if(false == stripos($covers,'.')){
-die("\nid: $val[id] down contents images error!\n");
-}
-//echo $covers,"\n";
-$img_str = 'IMG_API_URL='.$covers;
-$info['intro'] = str_replace($img,$img_str,$info['intro']);
+ //echo "== $val[thum] ==\n";
+ $data['imgurl'] = $img_url;
+ $covers = getHtml($data);
+ //去除字符串前3个字节
+ $covers = substr($covers,3);
+ if(false == stripos($covers,'.')){
+  die("\nid: $val[id] down contents images error!\n");
+ }
+ //echo $covers,"\n";
+ $img_str = 'IMG_API_URL='.$covers;
+ $info['intro'] = str_replace($img,$img_str,$info['intro']);
 }
 $info['intro'] = droptags($info['intro']);
 $set_data = array('download'=>$downurl,'intro'=>$info['intro']);

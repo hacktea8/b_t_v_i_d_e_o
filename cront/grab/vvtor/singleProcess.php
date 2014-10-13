@@ -4,7 +4,7 @@
 * 删除多余的自己进程
 */
 
-exec('ps -ax|grep grab.',$list);
+exec('ps ax|grep grab.',$list);
 //$pattern = 'php qgrab.php';
 $result = array();
 //$list = trim($list);

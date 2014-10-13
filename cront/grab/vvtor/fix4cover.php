@@ -22,7 +22,7 @@ if('http://' != substr($val['thum'],0,7)){
   $val['thum'] = str_replace('/res','',$val['thum']);
   $val['thum'] = 'http://i.ed2kers.com/'.$val['thum'];
 }
-//var_dump($val);exit;
+var_dump($val);exit;
 echo $val['id']," == ",$val['thum'],"\n";
 $default_opts = array(
   'http'=>array(

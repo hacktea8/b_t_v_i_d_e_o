@@ -93,26 +93,20 @@ class model{
   }
   function getIndexData(){
     $this->emuleIndex['new']=$this->getArticleListByCid(0,0,1,15);
-sleep(2);
     $this->emuleIndex['hot']=$this->getArticleListByCid(0,2,1,15);
-sleep(2);
     $this->emuleIndex['rand']=$this->getArticleListByCid(0,1,2,15);
-sleep(2);
 
     $rootCate=$this->getrootCate();
     $list=array();
     foreach($rootCate as $cate){
-sleep(2);
       $list=$this->getArticleListByCid($cate['id'],2,1,10);
 //echo '<pre>';var_dump($list);exit;
       $this->emuleIndex['catehot'][]=array('name'=>$cate['name'],'id'=>$cate['id'],'list'=>$list,'url'=>list_url($cate['id']));
         //List article
-sleep(2);
         $subcate=$this->getAllSubcateByCid($cate['id'],13);
         $list=array();
         foreach($subcate as $val){
-sleep(2);
-          $list[]=$this->getArticleListByCid($val['id'],0,1,15);
+          $list[]=$this->getArticleListByCid($val['id'],2,1,15);
         }
         $this->emuleIndex['topiclist'][]=array('rand'=>$this->getArticleListByCid($cate['id'],1,1,20),'subcate'=>array('cate'=>$subcate,'list'=>$list));
 

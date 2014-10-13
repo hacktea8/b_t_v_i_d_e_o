@@ -134,11 +134,11 @@ class emuleModel extends baseModel{
   public function getArticleListByCid($cid='',$order=0,$page=1,$limit=25){
      switch($order){
        case 1:
-       //$order=' ORDER BY a.hits ASC '; break;
-       $order=' ORDER BY a.ptime DESC '; break;
+       $order=' ORDER BY a.hits ASC '; break;
+       //$order=' ORDER BY a.ptime DESC '; break;
        case 2:
-       //$order=' ORDER BY a.hits DESC '; break;
-       $order=' ORDER BY a.ptime ASC '; break;
+       $order=' ORDER BY a.hits DESC '; break;
+       //$order=' ORDER BY a.ptime ASC '; break;
        default:
        $order=' ORDER BY a.ptime DESC ';
      }
@@ -203,12 +203,12 @@ class emuleModel extends baseModel{
   }
 
   public function getEmuleTopicByAid($aid,$uid=0,$isadmin=false,$edite=1){
-     $where = ' LIMIT 1';
+     $where = ' ';
      if($uid && !$isadmin && $edite)
-       $where = sprintf(' AND `uid`=%d LIMIT 1',$uid);
+       $where = sprintf(' AND `uid`=%d ',$uid);
 
      $table = sprintf("emule_article_content%d",$aid%10);
-     $sql = sprintf('SELECT %s FROM %s as a LEFT JOIN %s as ac ON (a.id=ac.id) WHERE a.id =%d  %s',$this->_datatopicStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix($table),$aid,$where);
+     $sql = sprintf('SELECT %s FROM %s as a LEFT JOIN %s as ac ON (a.id=ac.id) WHERE a.id =%d %s LIMIT 1',$this->_datatopicStruct,$this->db->dbprefix('emule_article'),$this->db->dbprefix($table),$aid,$where);
      $data = array();
      $data['info'] = $this->db->query($sql)->row_array();
      $data['info']['url'] = $this->get_link('topic','',$data['info']['id']);

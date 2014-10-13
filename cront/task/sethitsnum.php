@@ -22,7 +22,7 @@ foreach($keys as $k){
 //  usleep(1000);
 }
 
-echo "\n===$id=== Update Emule Topic Hit Log OK! ========\n";
+echo "\n===".count($keys)."=== Update Emule Topic Hit Log OK! ========\n";
 
 class model{
   protected $db;
