@@ -280,6 +280,7 @@ foreach($hotTopic as $row){
 </div><!-- end of page wrap-->
 <script type="text/javascript">
 var href = '';
+window.setTimeout(function(){$.get('/ajaxapi/article_pv/<?php echo $info['id'];?>')},5000);
 $(document).ready(function(){
 $("#emu_comment p a").bind('mouseover',function(){
 href = $(this).attr('href');

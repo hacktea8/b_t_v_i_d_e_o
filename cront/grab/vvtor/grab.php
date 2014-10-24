@@ -16,24 +16,24 @@ $db=new DB_MYSQL();
 
 $data = array('url' => 'http://img.hacktea8.com/fileapi/uploadurl?seq=', 'imgurl'=>'');
 $file_data = array('url' => 'http://img.hacktea8.com/filesapi/uploadurl?seq=', 'imgurl'=>'','filename'=>'');
-$task = 5;
+$task = 3;
 while($task){
-$list = getnocoverlist();
-if(empty($list)){
-echo "grab list empty!\n";
-sleep(600);
-break;
-}
-foreach($list as $val){
-if('http://' != substr($val['thum'],0,7)){
+ $list = getnocoverlist();
+ if(empty($list)){
+  echo "grab list empty!\n";
+  sleep(600);
+  break;
+ }
+ foreach($list as $val){
+ if('http://' != substr($val['thum'],0,7)){
   $val['thum'] = $_root.$val['thum'];
-}
-echo "== $val[thum] ==\n";
-$data['imgurl'] = $val['thum'];
-$cover = getHtml($data);
-//去除字符串前3个字节
-$cover = substr($cover,3);
-echo $cover,"\n";
+ }
+ echo "== $val[thum] ==\n";
+ $data['imgurl'] = $val['thum'];
+ $cover = getHtml($data);
+ //去除字符串前3个字节
+ $cover = substr($cover,3);
+ echo $cover,"\n";
 //exit;
 //echo strlen($cover);exit;
 $status = preg_replace('#^\d#','',$cover);
