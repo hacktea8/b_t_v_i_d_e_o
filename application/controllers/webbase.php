@@ -10,7 +10,8 @@ class Webbase extends CI_Controller {
   public $adminList = array(1);
   protected $_c = 'index'; 
   protected $_a = 'index'; 
-  
+  protected $static_html = '1'; 
+ 
   public function __construct(){
     parent::__construct();
     $this->load->library('memcached');

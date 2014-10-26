@@ -3,3 +3,5 @@
 */logs/!index.html
 */cache/!index.html
 */cache/!.htaccess
+*.sql*
+webhtmlcache/

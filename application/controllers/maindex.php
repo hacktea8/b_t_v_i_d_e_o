@@ -187,6 +187,15 @@ class Maindex extends Usrbase {
     }
 */
     $this->view('index_topic');
+    if(  $this->static_html){
+      $cache_file = CACHEDIR.($aid%10).'/'.$aid.'.html';
+      $cache_dir = dirname($cache_file);
+      makedir($cache_dir,0777);
+      $output = $this->output->get_output();
+      file_put_contents($cache_file,$output);
+      @chmod($cache_file,0777);
+
+    }
   }
   public function tpl(){
     $this->load->view('index_tpl',$this->viewData);
