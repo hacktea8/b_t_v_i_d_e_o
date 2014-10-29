@@ -1,72 +1,24 @@
 <?php
 /**
-
-UPDATE `bt_emule_article` SET `iscover`=0 WHERE `id` IN(SELECT id FROM `bt_emule_article_content0` where download like '%.jpg');
-
 */
+
+$uinfo = parse_url('http://i2.tietuku.com/cc0875dc8b2133f1s.jpg');
+var_dump($uinfo);exit;
 
 $APPPATH = dirname(__FILE__).'/';
 include_once($APPPATH.'../db.class.php');
-include_once($APPPATH.'../function.php');
 include_once($APPPATH.'config.php');
 
 $pattern = '/vvtor/grab.php';
 require_once $APPPATH.'singleProcess.php';
 
-$db = new DB_MYSQL();
 
-$data = array('url' => 'http://img.hacktea8.com/fileapi/uploadurl?seq=', 'imgurl'=>'');
-$file_data = array('url' => 'http://img.hacktea8.com/filesapi/uploadurl?seq=', 'imgurl'=>'','filename'=>'');
-$up_data = array('url' => 'http://img.hacktea8.com/ttkapi/uploadurl?seq=', 'imgurl'=>'','filename'=>''
- ,'site'=>'btv','album'=>'');
+$con_data = array('url' => 'http://img.hacktea8.com/ttkapi/uploadurl?seq='
+, 'imgurl'=>'','filename'=>'','site'=>'btv','album'=>'');
 
-$task = 3;
-while($task){
- $list = getnocoverlist();
- if(empty($list)){
-  echo "grab list empty!\n";
-  sleep(600);
-  break;
- }
- foreach($list as $val){
- if('http://' != substr($val['thum'],0,7)){
-  $val['thum'] = $_root.$val['thum'];
- }
- echo "== $val[thum] ==\n";
- $data['imgurl'] = $val['thum'];
- $cover = get_html($data);
- //去除字符串前3个字节
- $cover = trimBOM($cover);
- echo $cover,"\n";
-//exit;
-//echo strlen($cover);exit;
-$status = preg_replace('#^\d#','',$cover);
-if( in_array($status,array(44,404))){
-  die('Token 失效!');
-}
-if(0 == $status){
-  echo "$val[id] cover is down!\n";
-//  seterrcoverByid(4,$val['id']);
-  continue;
-}
-$info = getvideobyid($val['id']);
-$header = get_headers($_root.$info['downurl'],1);
-$filename = substr($header['Content-Disposition'],strlen("attachment; filename*=UTF-8''"));
-//var_dump($header);exit;
-//$filename = str_replace('.html','.zip',$val['ourl']);
-$file_data['filename'] = trim($filename);
-$file_data['imgurl'] = $_root.$info['downurl'];
-#var_dump($file_data);exit;
-$downurl = get_html($file_data);
-//去除字符串前3个字节
-$downurl = trimBOM($downurl);
-if(strlen($downurl)<10){
-sleep(600);exit;
-}
-//echo $downurl,"\n";exit;
+$mimg = array('http://6.blog.xuite.net/6/f/1/9/235832018/blog_3093938/txt/64483615/1.jpg');
 
-preg_match_all('#<img .*src="([^"]+)"#Uis',$info['intro'],$match);
-foreach($match[1] as $img){
+foreach($mimg as $img){
  if('IMG_API_URL=' == substr($img,0,12)){
    continue;
  }
@@ -75,55 +27,20 @@ foreach($match[1] as $img){
   $img_url = $_root.$img;
  }
  //echo "== $val[thum] ==\n";
- $up_data['imgurl'] = $img_url;
- $up_data['filename'] = basename($img_url);
- for($i = 0;$i<3;$i++){
-  $covers = get_html($up_data);
-  $covers = trimBOM($covers);
-//echo '|',$covers,'|',"\n";
-  $covers = json_decode($covers, 1);
-  //var_dump($covers);
-  if(1 == $covers['flag']){
-    break;
-  }
-  sleep(10);
+ $con_data['imgurl'] = $img_url;
+ $con_data['filename'] = basename($img_url);
+//var_dump($con_data);exit;
+ $covers = getHtml($con_data);
+var_dump($covers);exit;
+ //去除字符串前3个字节
+ $covers = substr($covers,3);
+ if(false == stripos($covers,'.')){
+  die("\nid: $val[id] down contents images error!\n");
  }
-//var_dump($covers);exit;
- if(1 == $covers['flag']){
-/*
-  //去除字符串前3个字节
-  $covers = substr($covers,3);
-  if(false == stripos($covers,'.')){
-   die("\nid: $val[id] down contents images error!\n");
-  }
- 
-  //echo $covers,"\n";
-  $img_str = 'IMG_API_URL='.$covers;
-*/
-  $img_str = $covers['url']; 
- }else{
-  file_put_contents('debug_error.txt',$covers['msg']."\r\n",FILE_APPEND);
-  sleep(36000);
-  exit;
- }
+ //echo $covers,"\n";
+ $img_str = 'IMG_API_URL='.$covers;
  $info['intro'] = str_replace($img,$img_str,$info['intro']);
 }
-$info['intro'] = droptags($info['intro']);
-$set_data = array('download'=>$downurl,'intro'=>$info['intro']);
-
-//var_dump($set_data);exit;
-setcontentdata($set_data,$val['id']);
-//
-setcoverByid($cover,$val['id']);
-//echo $val['id'],"\n",exit;
-sleep(15);
-}
-//var_dump($list);exit;
-$task --;
-//2min
-sleep(18);
-}
-file_put_contents('imgres.txt',$val['id']);
 
 
 function getnocoverlist($limit = 20){
@@ -166,7 +83,7 @@ function setcoverByid($cover = '',$id = 0){
     $sql = sprintf('UPDATE %s SET `cover`=\'%s\',`iscover`=1,flag=1 WHERE `id`=%d LIMIT 1',$db->getTable('emule_article'),mysql_real_escape_string($cover),$id);
     $db->query($sql);
 }
-function get_html(&$data){
+function getHtml(&$data){
   $curl = curl_init();
   $url = $data['url'];
   unset($data['url']);
@@ -179,7 +96,9 @@ function get_html(&$data){
   curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
   curl_setopt($curl, CURLOPT_HEADER, 0);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($curl, CURLOPT_TIMEOUT,300);
   $tmpInfo = curl_exec($curl);
+
   if(curl_errno($curl)){
     echo 'error',curl_error($curl),"\r\n";
     return false;
@@ -193,7 +112,6 @@ global $_root;
 $str_replace = array(
 array('from'=>'</a>','to'=>'')
 ,array('from'=>'<img </td>','to'=>'<img ')
-,array('from'=>'</td> />','to'=>' />')
 ,array('from'=>substr($_root,0,-1),'to'=>'http://btv.hacktea8.com/')
 );
 $preg_replace = array(
