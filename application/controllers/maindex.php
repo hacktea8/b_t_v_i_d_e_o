@@ -178,13 +178,24 @@ class Maindex extends Usrbase {
     ,'seo_description'=>$seo_description
     )); 
 //echo '<pre>';var_dump($data['info']);exit;
+/*
     $ip = $this->input->ip_address();
     $key = sprintf('hitslog:%s:%d',$ip,$aid);
 //var_dump($this->redis->exists($key));exit;
     if(!$this->redis->exists($key)){
        $this->redis->set($key, 1, $this->expirettl['6h']);
     }
+*/
     $this->view('index_topic');
+    if(  $this->static_html){
+      $cache_file = CACHEDIR.($aid%10).'/'.$aid.'.html';
+      $cache_dir = dirname($cache_file);
+      makedir($cache_dir,0777);
+      $output = $this->output->get_output();
+      file_put_contents($cache_file,$output);
+      @chmod($cache_file,0777);
+
+    }
   }
   public function tpl(){
     $this->load->view('index_tpl',$this->viewData);

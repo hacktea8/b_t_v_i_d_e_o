@@ -31,6 +31,10 @@ class Rediscache{
     $key = $this->getkey($key);
     return $this->redis->exists($key);
   }
+  public function incr($key){
+    $key = $this->getkey($key);
+    return $this->redis->incr($key);
+  }
   public function keys($key = ''){
     if( !$key){
        return false;
