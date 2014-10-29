@@ -185,7 +185,7 @@ function getinfodetail(&$data){
   $data['utime']=time();//strtotime(trim($match[2]));
 //  var_dump($match);exit;
   preg_match('#href="http://www\.vvtor\.com/(\?dl_id=\d+)">#Uis',$html,$match);
-  $str = $match[1];
+  $str = @$match[1];
   $data['downurl']=$str;
   $data['ourl'] = str_replace($_root,'',$data['ourl']);
   $data['thum'] = str_replace($_root,'',$data['thum']);

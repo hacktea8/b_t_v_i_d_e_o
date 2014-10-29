@@ -1,4 +1,6 @@
 <?php
+$abort = 0;
+$lastK = 1;
 
 $APPPATH=dirname(__FILE__).'/';
 $psize=10;
@@ -19,8 +21,6 @@ if(0){
  $subcate = json_decode($json, 1);
 }
 
-$abort = 1;
-$lastK = 1;
 foreach($subcate as $k => $_cate){
  if(!$_cate['oname']){
   continue;
