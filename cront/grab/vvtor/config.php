@@ -1,6 +1,5 @@
 <?php
 
-$POST_API = 'http://btv.emubt.com/grabapi/';
 
 $cateid=2;$pageno=1;
 $_root='http://www.vvtor.com/';

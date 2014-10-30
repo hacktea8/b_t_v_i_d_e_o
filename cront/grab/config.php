@@ -1,5 +1,7 @@
 <?php
 
+$POST_API = 'http://btv.emubt.com/grabapi/';
+
 $grabsite = array(
 //ed2k
 array('domain'=>'http://www.ed2kers.com/'),

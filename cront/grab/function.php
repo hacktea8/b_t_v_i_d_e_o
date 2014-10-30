@@ -7,6 +7,7 @@ include_once($APPPATH.'../model.php');
 $model=new Model();
 */
 include_once($APPPATH.'../post_fun.php');
+include_once($APPPATH.'../config.php');
 
 /*
 获取配对的标签的内容
@@ -215,33 +216,5 @@ function getinfodetail(&$data){
   }
   echo "添加成功! $aid \r\n";
 //exit;
-}
-
-function getHtml($url){
-  $curl = curl_init();
-  curl_setopt($curl, CURLOPT_URL, $url);
-  curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.3 (Windows; U; Windows NT 5.3; zh-TW; rv:1.9.3.25) Gecko/20110419 Firefox/3.7.12');
-  // curl_setopt($curl, CURLOPT_PROXY ,"http://189.89.170.182:8080");
-  curl_setopt($curl,CURLOPT_FOLLOWLOCATION,true);
-  curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
-  curl_setopt($curl, CURLOPT_HEADER, 0);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-  $tmpInfo = curl_exec($curl);
-  if(curl_errno($curl)){
-    echo 'error',curl_error($curl),"\r\n";
-    return false;
-  }
-  curl_close($curl);
-  return $tmpInfo;
-}
-function trimBOM ($contents) {
- $charset = array();
- $charset[1] = substr($contents, 0, 1);
- $charset[2] = substr($contents, 1, 1);
- $charset[3] = substr($contents, 2, 1);
- if (ord($charset[1]) == 239 && ord($charset[2]) == 187 && ord($charset[3]) == 191) {
-   return substr($contents, 3);
- }
- return $contents;
 }
 ?>

@@ -2,8 +2,8 @@
 $abort = 0;
 $lastK = 1;
 
-$APPPATH=dirname(__FILE__).'/';
-$psize=10;
+$APPPATH = dirname(__FILE__).'/';
+$psize = 10;
 include_once($APPPATH.'../function.php');
 include_once($APPPATH.'config.php');
 
