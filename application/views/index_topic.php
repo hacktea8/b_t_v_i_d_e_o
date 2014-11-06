@@ -14,11 +14,11 @@
         <h1 id="topicstitle"><?php echo $info['name'];?> 
  <?php if($uinfo['uid'] === $info['uid'] || $uinfo['isadmin']){echo "<a href='$editeUrl/$info[id]'>编辑</a>"; }?>
 </h1>
-                                 <input value="" name="entryid" id="entryid" type="hidden">
-                 <div class="topicImg">
-     		            <a id="topicImgUrl" href="<?php echo $info['id'];?>" title="<?php echo $info['name'];?>">
-                <img alt="<?php echo $info['name'];?>" title="<?php echo $info['name'];?>" class="cover" src="<?php echo $showimgapi,$info['cover'];?>&w=136" >
-              </a>
+       <input value="" name="entryid" id="entryid" type="hidden">
+          <div class="topicImg">
+         <a id="topicImgUrl" href="<?php echo $info['id'];?>" title="<?php echo $info['name'];?>">
+         <img alt="<?php echo $info['name'];?>" title="<?php echo $info['name'];?>" class="cover" src="<?php echo $showimgapi,$info['cover'];?>&w=136" >
+         </a>
         </div>
         <div style="float:left;width:500px;overflow:hidden;">
         <div class="block1">
@@ -40,14 +40,14 @@
             </div>
 <?php if (0){ ?>            
 	<div class="resInfoBox" id="membertable">
-			</div>
+	</div>
 <?php } ?>
-			        </div>
+        </div>
 <!-- .block1 -->
         <div id="showFolderBaseDoDiv" style="float: left;"></div>
         <div class="block2" style="float:left;">
             <div style="float:left;">
-                                <div id="addFavModule" style="float:left;position:relative;width:125px;margin-left:5px">
+                  <div id="addFavModule" style="float:left;position:relative;width:125px;margin-left:5px">
                     <a class="addFav" alt="收藏该资源" id="addFav"><img src="<?php echo $img_url,$isCollect?'del':'','favorite.gif';?>" id="addFavBtn" alt="收藏该资源" /></a>
                     <div style="position: absolute; left: 133px; top: -17px; margin: 0px; border: 1px solid rgb(205, 180, 126); width: 310px; background: none repeat scroll 0% 0% rgb(255, 255, 205); height: 55px;z-index:3;" id="folderfavoritatips">
                         <div style="position: absolute; height: 30px; width: 12px; top: 18px;left:-12px; background: url(<?php echo $img_url;?>tipsleft.gif) no-repeat scroll 0% 0% transparent;">
@@ -110,9 +110,10 @@
         <div class="blog_entry">
             <div class="iptcom" id="iptcomED2K">
                  <div class="app-dl">
-<?php
-echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_download\',\'',$info['name'],'\',\'',$info['url'],'\');" rel="nofollow" title="【',substr($info['ourl'],0,-5),'.zip】" href="',$showimgapi,$info['download'],'&filename=',substr($info['ourl'],0,-5),'" target="_blank" >','立刻下载至电脑</a>';
-echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_question\',\'',$info['name'],'\',\'',$info['url'],'\');" title="问题反馈" href="http://goo.gl/86PJc4" target="_blank" >','问题反馈</a>';
+<?php if($info['download']){
+ echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_download\',\'',$info['name'],'\',\'',$info['url'],'\');" rel="nofollow" title="【',substr($info['ourl'],0,-5),'.zip】" href="',$showimgapi,$info['download'],'&filename=',substr($info['ourl'],0,-5),'" target="_blank" >','立刻下载至电脑</a>';
+}
+echo '<a onclick="ga(\'send\',\'event\', \'maindex_topic_question\',\'',$info['name'],'\',\'',$info['url'],'\');" title="问题反馈" href="http://www.hacktea8.com/forum.php?mod=forumdisplay&fid=79&filter=typeid&typeid=338" target="_blank" >','问题反馈</a>';
 if($verifycode){
   echo '<h1 style="color:red;text-align:center;">温馨提示:输入验证码即可显示下载地址!</h1><form id="verify_form">',$verifycode,'</form>';
 ?>
@@ -150,10 +151,24 @@ alert('验证码输入有误!');
 }
 ?>
 </div>
-                 <div onclick="ga('send','event', 'VIPdownload', 'click', '<?php echo $info['url'];?>');"  style="border:1px solid #faccaa; background:#ffffce; text-align:center; clear:both; padding: 5px 10px; margin:5px 10px 5px 0; font-size:1.2em">
+<?php if( isset($info['extra'])){?>
+<div onclick="ga('send','event', 'thunder_download', 'click', '<?php echo $info['extra']['thunder'];?>');"  style="border:1px solid #faccaa; background:#ffffce; text-align:center; clear:both; padding: 5px 10px; margin:5px 10px 5px 0; font-size:1.2em">
+迅雷通道:<a href="<?php echo $info['extra']['thunder'];?>" target="_blank"><?php echo $info['name'];?></a>
+</div>
+<div onclick="ga('send','event', 'flashget_download', 'click', '<?php echo $info['extra']['flashget'];?>');"  style="border:1px solid #faccaa; background:#ffffce; text-align:center; clear:both; padding: 5px 10px; margin:5px 10px 5px 0; font-size:1.2em">
+快车通道:<a href="<?php echo $info['extra']['flashget'];?>" target="_blank"><?php echo $info['name'];?></a>
+</div>
+<div onclick="ga('send','event', 'qqdl_download', 'click', '<?php echo $info['extra']['qqdl'];?>');"  style="border:1px solid #faccaa; background:#ffffce; text-align:center; clear:both; padding: 5px 10px; margin:5px 10px 5px 0; font-size:1.2em">
+QQ旋风通道:<a href="<?php echo $info['extra']['qqdl'];?>" target="_blank"><?php echo $info['name'];?></a>
+</div>
+<?php }?>
+     <div onclick="ga('send','event', 'VIPdownload', 'click', '<?php echo $info['url'];?>');"  style="border:1px solid #faccaa; background:#ffffce; text-align:center; clear:both; padding: 5px 10px; margin:5px 10px 5px 0; font-size:1.2em">
 VIP通道:<?php echo $info['vipdwurl'];?>
 </div>
-            </div>
+ </div>
+ <div class="iptcom">
+ <script src="http://c.3839168.com/code1/wz_start.asp?pid=272497" charset="gb2312"></script>
+ </div>
             <div class="iptcom" id="iptcomCname">
 <?php echo $info['intro'];?>
         <!--Wrap-tail end--></div>

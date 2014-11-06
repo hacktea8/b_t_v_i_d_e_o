@@ -122,31 +122,37 @@ class Maindex extends Usrbase {
     ,'postion'=>$postion,'page_string'=>$page_string,'subcatelist'=>$data['subcatelist'],'cid'=>$cid));
     $this->view('index_lists');
   }
-  public function topic($aid){
-    $aid = intval($aid);
-    if($aid <1){
-      header('HTTP/1.1 301 Moved Permanently');
-      header('Location: /');
-      exit;
-    }
-    $data = $this->emulemodel->getEmuleTopicByAid($aid,$this->userInfo['uid'], $this->userInfo['isadmin'],0);
-    $data['info']['ptime']=date('Y:m:d', $data['info']['ptime']);
-    $data['info']['utime'] = date('Y/m/d', $data['info']['utime']);
-    $this->_rewrite_article_url($data['info']);
-    $data['info'] = $data['info'][0];
-    $data['info']['fav'] = 0;
-    $cid = $data['info']['cid'] ? $data['info']['cid'] : 0;
-    $cpid = isset($data['postion'][0]['id'])?$data['postion'][0]['id']:0;
-    $topic_relate_key = 'topic_relate_'.$cid;
-    $data['info']['relatdata'] = $this->mem->get($topic_relate_key);
-    if(empty($data['info']['relatdata'])){
-      $data['info']['relatdata'] = $this->emulemodel->getArticleListByCid($data['info']['cid'],1,2,16);
-      $data['info']['relatdata'] = $data['info']['relatdata']["emulelist"];
-      $this->mem->set($topic_relate_key,$data['info']['relatdata'],$this->expirettl['1h']);
-    }
+ public function topic($aid){
+  $aid = intval($aid);
+  if($aid <1){
+   header('HTTP/1.1 301 Moved Permanently');
+   header('Location: /');
+   exit;
+  }
+  $data = $this->emulemodel->getEmuleTopicByAid($aid,$this->userInfo['uid'], $this->userInfo['isadmin'],0);
+  $data['info']['ptime']=date('Y:m:d', $data['info']['ptime']);
+  $data['info']['utime'] = date('Y/m/d', $data['info']['utime']);
+  if($data['info']['thund']){
+   $extra = convert_downurl($data['info']['thund']);
+   if(1 == $extra['flag']){
+    $data['info']['extra'] = $extra;
+   }
+  }
+  $this->_rewrite_article_url($data['info']);
+  $data['info'] = $data['info'][0];
+  $data['info']['fav'] = 0;
+  $cid = $data['info']['cid'] ? $data['info']['cid'] : 0;
+  $cpid = isset($data['postion'][0]['id'])?$data['postion'][0]['id']:0;
+  $topic_relate_key = 'topic_relate_'.$cid;
+  $data['info']['relatdata'] = $this->mem->get($topic_relate_key);
+  if(empty($data['info']['relatdata'])){
+   $data['info']['relatdata'] = $this->emulemodel->getArticleListByCid($data['info']['cid'],1,2,16);
+   $data['info']['relatdata'] = $data['info']['relatdata']["emulelist"];
+   $this->mem->set($topic_relate_key,$data['info']['relatdata'],$this->expirettl['1h']);
+  }
 // seo setting
-    $kw = '';
-    $data['postion'] = array($this->viewData['rootCate'][$cid],array('url'=>'javascript:void(0);','name'=>$data['info']['name']));
+  $kw = '';
+  $data['postion'] = array($this->viewData['rootCate'][$cid],array('url'=>'javascript:void(0);','name'=>$data['info']['name']));
     foreach($data['postion'] as $row){
        $kw .= $row['name'].',';
     }

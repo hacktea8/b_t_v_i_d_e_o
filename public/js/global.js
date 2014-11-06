@@ -1,3 +1,4 @@
+window.onerror=function(){return true;}
 is_ie=navigator.appName=="Microsoft Internet Explorer"?true:false;
 is_opera=navigator.appName.indexOf("Opera")>=0?true:false;
 userAgent=navigator.userAgent.toLowerCase();
@@ -84,4 +85,9 @@ addfavorite=function(a,b){
       Msg("您的浏览器不支持此功能，请手动按" + (navigator.userAgent.toLowerCase().indexOf('mac') != - 1 ? 'Command/Cmd' : 'CTRL') + " + D加入，谢谢。");
     }
   }
+};
+Array.prototype.S=String.fromCharCode(2);
+Array.prototype.in_array=function(e){
+ var r=new RegExp(this.S+e+this.S);
+ return (r.test(this.S+this.join(this.S)+this.S));
 };

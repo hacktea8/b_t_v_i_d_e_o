@@ -2,7 +2,7 @@
 require_once 'basemodel.php';
 class emuleModel extends baseModel{
   protected $_dataStruct = 'a.`id`, a.`cid`, a.`uid`, a.`name`, a.`collectcount`, a.`ptime`, a.`utime`, a.`cover`, a.`hits`';
-  protected $_datatopicStruct = 'a.`id`,a.`ourl`, a.`cid`, a.`uid`, a.`name`, a.`collectcount`, ac.`keyword`, ac.`download`, ac.`vipdwurl`, a.`ptime`, a.`utime`, ac.`intro`, a.`cover`, a.`hits`';
+  protected $_datatopicStruct = 'a.`id`,a.ourl, a.`cid`, a.`uid`, a.`name`, a.`collectcount`, ac.`keyword`, ac.`download`,ac.thund, ac.`vipdwurl`, a.`ptime`, a.`utime`, ac.`intro`, a.`cover`, a.`hits`';
 
   public function __construct(){
     parent::__construct();

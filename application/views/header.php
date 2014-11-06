@@ -3,13 +3,12 @@
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <meta content="<?php echo $seo_keywords,',',$web_title;if($_a != 'topic'){echo ",龙BT发布,BT之家";}?>" name="keywords">
-<meta content="<?php echo $seo_title,'-',$seo_description;?>" name="description">
+<meta content="<?php echo $seo_title,'-',$web_title,$seo_description;?>" name="description">
 <?php if(isset($cid)){?>
 <link href="/api/feed/<?php echo $cid;?>" title="<?php echo $seo_title;?> - <?php echo $web_title;?>" type="application/rss+xml" rel="alternate">
 <?php }?>
 <title><?php echo $seo_title;?> - <?php echo $web_title,'种子资源分享';if(in_array($_a,array('index','lists'))){ echo '_BT种子下载|龙BT发布|BT之家|BTV.EmuBt.Com';}?></title>
 <link title="电驴资源" href="/api/opensearch" type="application/opensearchdescription+xml" rel="search">
-
 <link rel="stylesheet" href="<?php echo $css_url;?>global.css?v=<?php echo $version;?>" type="text/css">
 <link rel="stylesheet" href="<?php echo $css_url,$_c,'_',$_a;?>.css?v=<?php echo $version;?>" type="text/css">
 <script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
@@ -22,15 +21,14 @@
 <script type="text/javascript" src="<?php echo $js_url;?>item.js?v=<?php echo $version;?>"></script>
 <?php } ?>
 <script type="text/javascript">
-  window.onerror=function(){return true;}
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+var _action = '<?php echo $_a;?>';
+var _errpic = '<?php echo $errorimg;?>';
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
   ga('create', 'UA-43439571-2', 'emubt.com');
   ga('send', 'pageview');
-
 </script>
 <?php if(in_array($_a,array('index','lists','topic'))){ ?>
 <script type="text/javascript" src="http://cbjs.baidu.com/js/m.js"></script>
