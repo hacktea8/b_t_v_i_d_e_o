@@ -2,6 +2,17 @@
 <html lang="zh-CN" xml:lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:wb="http://open.weibo.com/wb">
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<?php if('topic' == $_a){?>
+<meta property="og:image" content="<?php echo $showimgapi,$info['cover'];?>" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="<?php echo $base_url,'maindex/topic/',$info['id'];?>" />
+<meta property="og:site_name" content="<?php echo $web_title;?>" />
+<meta property="og:title" content="<?php echo $info['name'];?>" />
+<meta property="article:section" content="<?php echo $rootCate[$info['cid']]['name'];?>" />
+<meta property="og:description" content="<?php echo $seo_description;?>" />
+<meta name=thumbnail" content="<?php echo $showimgapi,$info['cover'];?>" />
+<meta itemprop="image" content="<?php echo $showimgapi,$info['cover'];?>"/>
+<?php }?>
 <meta content="<?php echo $seo_keywords,',',$web_title;if($_a != 'topic'){echo ",龙BT发布,BT之家";}?>" name="keywords">
 <meta content="<?php echo $seo_title,'-',$web_title,$seo_description;?>" name="description">
 <?php if(isset($cid)){?>
