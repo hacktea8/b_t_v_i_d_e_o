@@ -3,7 +3,8 @@
 
 <div class="mainDiv">
 <?php if(in_array($_a,array('index','lists','topic'))){?>
-<script type="text/javascript">BAIDU_CLB_fillSlot("902635");</script>
+<!-- 广告位：btv_emubt_com_cpv -->
+<script type="text/javascript">BAIDU_CLB_fillSlot("1010783");</script>
 <?php }?>
 <div class="line_space"></div>
 </div>

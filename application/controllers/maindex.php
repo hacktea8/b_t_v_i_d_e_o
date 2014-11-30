@@ -184,16 +184,8 @@ class Maindex extends Usrbase {
     ,'seo_description'=>$seo_description
     )); 
 //echo '<pre>';var_dump($data['info']);exit;
-/*
-    $ip = $this->input->ip_address();
-    $key = sprintf('hitslog:%s:%d',$ip,$aid);
-//var_dump($this->redis->exists($key));exit;
-    if(!$this->redis->exists($key)){
-       $this->redis->set($key, 1, $this->expirettl['6h']);
-    }
-*/
     $this->view('index_topic');
-    if(  $this->static_html){
+    if( !self::$robot && $this->static_html && $data['info']['cover']){
       $cache_file = CACHEDIR.($aid%10).'/'.$aid.'.html';
       $cache_dir = dirname($cache_file);
       makedir($cache_dir,0777);

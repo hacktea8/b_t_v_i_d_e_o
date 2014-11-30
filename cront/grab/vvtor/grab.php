@@ -6,6 +6,7 @@ UPDATE `bt_emule_article` SET `iscover`=0 WHERE `id` IN(SELECT id FROM `bt_emule
 */
 
 $APPPATH = dirname(__FILE__).'/';
+define('ROOTPATH',dirname($APPPATH).'/');
 include_once($APPPATH.'../db.class.php');
 include_once($APPPATH.'../function.php');
 include_once($APPPATH.'config.php');
@@ -32,7 +33,7 @@ while($task){
  if('http://' != substr($val['thum'],0,7)){
   $val['thum'] = $_root.$val['thum'];
  }
- echo "== $val[thum] ==\n";
+ echo "== $val[thum] $val[id] ==\n";
  $data['imgurl'] = $val['thum'];
  $cover = get_html($data);
  //去除字符串前3个字节
@@ -50,6 +51,7 @@ if(0 == $status){
   continue;
 }
 $info = getvideobyid($val['id']);
+
 $header = get_headers($_root.$info['downurl'],1);
 $filename = substr($header['Content-Disposition'],strlen("attachment; filename*=UTF-8''"));
 //var_dump($header);exit;
@@ -61,6 +63,7 @@ $downurl = get_html($file_data);
 //去除字符串前3个字节
 $downurl = trimBOM($downurl);
 if(strlen($downurl)<10){
+echo "==== Download torrent file error! =====\n";
 sleep(600);exit;
 }
 //echo $downurl,"\n";exit;
@@ -75,34 +78,22 @@ foreach($match[1] as $img){
   $img_url = $_root.$img;
  }
  //echo "== $val[thum] ==\n";
- $up_data['imgurl'] = $img_url;
- $up_data['filename'] = basename($img_url);
  for($i = 0;$i<3;$i++){
-  $covers = get_html($up_data);
-  $covers = trimBOM($covers);
-//echo '|',$covers,'|',"\n";
-  $covers = json_decode($covers, 1);
-  //var_dump($covers);
-  if(1 == $covers['flag']){
-    break;
+  $uploadData['imgurl'] = $img_url;
+  $uploadData['referer'] = '';
+  $r = upload2Ttk($uploadData);
+  if(1 == $r['flag']){
+   break;
   }
   sleep(10);
  }
-//var_dump($covers);exit;
- if(1 == $covers['flag']){
-/*
-  //去除字符串前3个字节
-  $covers = substr($covers,3);
-  if(false == stripos($covers,'.')){
-   die("\nid: $val[id] down contents images error!\n");
-  }
- 
-  //echo $covers,"\n";
-  $img_str = 'IMG_API_URL='.$covers;
-*/
-  $img_str = $covers['url']; 
+//var_dump($r);exit;
+ if(1 == $r['flag']){
+  $img_str = $r['url']; 
  }else{
-  file_put_contents('debug_error.txt',$covers['msg']."\r\n",FILE_APPEND);
+  file_put_contents($APPPATH.'debug_error.txt',json_encode($r)."\r\n",FILE_APPEND);
+  echo "==== content images trans error! Url {$img_url}=====\n";
+  var_dump($r);
   sleep(36000);
   exit;
  }

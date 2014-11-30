@@ -51,6 +51,7 @@ if ( ! function_exists('getSynuserUid'))
       $uinfo = uc_authcode($code, $operation = 'DECODE');
       $info = array();
       list($info['uname'],$info['uid']) = explode("\t", $uinfo);
+      $info['uname'] = mb_convert_encoding($info['uname'],'UTF-8','GBK');
       return $info;
     }
     return false;

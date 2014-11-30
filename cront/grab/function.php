@@ -9,6 +9,113 @@ $model=new Model();
 include_once($APPPATH.'../post_fun.php');
 include_once($APPPATH.'../config.php');
 
+require_once $APPPATH.'../../../application/libraries/Tietuku.php';
+require_once $APPPATH.'../../../application/libraries/gickimg.php';
+
+$gickimg = new Gickimg();
+$tietuku = new Tietuku();
+
+function upload2Ttk($data = array()){
+ global $ttkAlbum,$allowext,$ttkKey,$gickimg,$tietuku;
+ $err = array('flag'=>-1,'msg'=>'未知错误');
+ $imgurl = &$data['imgurl'];
+ $referer = &$data['referer'];
+ $curMin = date('i');
+ $mk = $curMin%count($ttkKey);
+ $curKey = $ttkKey['m'.$mk];
+ $curAlbum = $ttkAlbum['m'.$mk];
+ $ak = 'w'.date('w');
+ $albumid = $curAlbum[$ak];
+ $filename = basename($imgurl);
+ $imginfo = array('title'=>$filename);
+ $imginfo['ext'] = getextname($filename);
+/**/
+ $dwdata = array('url'=>$imgurl,'referer'=>$referer);
+ $html = getHtml($dwdata['url']);
+ $imgurl = ROOTPATH.'cache_images/ttk'.$imginfo['title'];
+ @file_put_contents($imgurl, $html);
+ @chmod($imgurl, 0777);
+ if(!file_exists($imgurl)){
+  @unlink($imgurl);
+  $err['msg'] = 'file Down err '.$imgurl;
+  return $err;
+ }
+ if( filesize($imgurl) <2000){
+  @unlink($imgurl);
+  $err['msg'] = 'file size too small';
+  return $err;
+ }
+ if(in_array($imginfo['ext'], $allowext)){
+  $dst_ext = '';
+  if('.jpg' != $imginfo['ext']){
+   $dst_ext = '.jpg';
+  }
+  $imgurl_w = ROOTPATH.'cache_images/ttkw'.$imginfo['title'].$dst_ext;
+  $out_imgurl = $imgurl.$dst_ext;
+
+  $cmd = "convert {$imgurl} {$out_imgurl}";
+  //echo "$cmd\n";
+  @exec($cmd);
+  if( !file_exists($out_imgurl)){
+   @unlink($imgurl);
+   $err['msg'] = 'file Convert err '.$imgurl;
+   return $err;
+  }
+  $water = ROOTPATH.'water/mhwater.png';
+  $gickimg->waterMark($out_imgurl,$water,$imgurl_w);
+  @chmod($imgurl_w, 0777);
+  $upFile = &$imgurl_w;
+  if( !file_exists($imgurl_w) || filesize($imgurl_w) <2000){
+   $upFile = &$out_imgurl;
+   @unlink($imgurl_w);
+  }
+ }else{
+  $upFile = &$imgurl;
+//exit;
+ }
+ $tietuku->init($curKey);
+ $json = $tietuku->uploadFile($albumid,$upFile);
+ @unlink($imgurl);
+ @unlink($out_imgurl);
+ @unlink($upFile);
+ $iurl = @$json['linkurl'];
+ if( !$iurl){
+  $err['msg'] = 'save file failed';
+//var_dump($json);exit;
+  return $err;
+ }
+ $r = parse_info($iurl);
+//var_dump($r);exit;
+ if( !$r){
+  $err['msg'] = 'parse url failed';
+  return $err;
+ }
+ $r['flag'] = 1;
+ return $r;
+}
+function parse_info($url){
+  $uinfo = parse_url($url);
+  $r = array();
+  $host = @$uinfo['host'];
+  $host = explode('.',$host);
+  $r['host'] = @$host[0];
+  $host = ltrim(@$uinfo['path'],'/');
+  $host = explode('.',$host);
+  $r['key'] = @$host[0];
+  if( !$r['host'] || !$r['key']){
+   return 0;
+  }
+  $r['url'] = $url;
+  return $r;
+}
+function getextname($fname=''){
+ if(!$fname){
+  return false;
+ }
+ $extend =explode("." , $fname);
+ $ext = strtolower(end($extend));
+ return '.'.$ext;
+}
 /*
 获取配对的标签的内容
 */

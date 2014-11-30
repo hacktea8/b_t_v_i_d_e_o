@@ -60,11 +60,9 @@ var _errpic = '<?php echo $errorimg;?>';
 <ul class="header_link clearfix">
   <li class="link_item"><a href="/"
 onclick="" class="hover_red"><strong>首页</strong></a></li>
-<?php if(0){?>
-  <li class="link_item">
-<a target="_blank" href="http://goo.gl/UEybJt"><img border="0" style="margin-top:5px;" src="http://pub.idqqimg.com/wpa/images/group.png" alt="电驴BT资源分享" title="电驴BT资源分享"></a>
+ <li class="link_item">
+<a style="display:block;margin-top:5px;" target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=b7e5c10f9f8ff387d4b4b7d0cbe6644f8b3468948f539199f465ef7ecc45282d"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="静思乐BT影视" title="静思乐BT影视"></a>
   </li>
-<?php }?>
   <li class="link_item">
 <a version="1.0" class="qzOpenerDiv" href="http://goo.gl/LwcZXa" target="_blank" alt="赞一个" title="赞一个">赞一个</a>
   </li>
